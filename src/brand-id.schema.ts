@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const BrandIdSchemaVersionSchema = z.literal("0.1.0");
+export const BrandIdSchemaVersionSchema = z.literal("0.2.0");
 export type BrandIdSchemaVersion = z.infer<typeof BrandIdSchemaVersionSchema>;
 
 export const ISODateStringSchema = z.string().min(1);
@@ -29,7 +29,7 @@ export type ReviewStatus = z.infer<typeof ReviewStatusSchema>;
 export const ConfidenceLabelSchema = z.enum(["low", "medium", "high"]);
 export type ConfidenceLabel = z.infer<typeof ConfidenceLabelSchema>;
 
-export const FieldStatusSchema = z.enum([
+export const AnnotationStatusSchema = z.enum([
   "confirmed",
   "inferred",
   "mixed",
@@ -37,17 +37,18 @@ export const FieldStatusSchema = z.enum([
   "needs_review",
   "rejected",
 ]);
-export type FieldStatus = z.infer<typeof FieldStatusSchema>;
+export type AnnotationStatus = z.infer<typeof AnnotationStatusSchema>;
 
-export const InferenceTypeSchema = z.enum([
+export const EvidenceBasisSchema = z.enum([
   "quoted",
   "paraphrased",
   "synthesized",
   "derived",
   "assumed",
   "missing",
+  "manual",
 ]);
-export type InferenceType = z.infer<typeof InferenceTypeSchema>;
+export type EvidenceBasis = z.infer<typeof EvidenceBasisSchema>;
 
 export const EvidenceKindSchema = z.enum([
   "website",
@@ -178,6 +179,8 @@ export type MessagingObjective = z.infer<typeof MessagingObjectiveSchema>;
 export const KnowledgeLevelSchema = z.enum(["general", "aware", "practitioner", "expert", "mixed"]);
 export type KnowledgeLevel = z.infer<typeof KnowledgeLevelSchema>;
 
+const NullableStringSchema = z.string().nullable();
+
 export const ConfidenceSchema = z.object({
   score: z.number().min(0).max(1),
   label: ConfidenceLabelSchema,
@@ -193,26 +196,21 @@ export const EvidenceReferenceSchema = z.object({
 });
 export type EvidenceReference = z.infer<typeof EvidenceReferenceSchema>;
 
-export type SourcedValue<T> = {
-  value: T | null;
-  status: FieldStatus;
-  confidence: Confidence;
-  sources: EvidenceReference[];
-  inferenceType: InferenceType;
-  notes?: string;
-  lastReviewedAt?: ISODateString | null;
-};
+export const BrandFieldPathSchema = z.string().regex(/^\//, "Brand field paths must be JSON Pointer strings.");
+export type BrandFieldPath = z.infer<typeof BrandFieldPathSchema>;
 
-export const createSourcedValueSchema = <T extends z.ZodTypeAny>(valueSchema: T) =>
-  z.object({
-    value: valueSchema.nullable(),
-    status: FieldStatusSchema,
-    confidence: ConfidenceSchema,
-    sources: z.array(EvidenceReferenceSchema),
-    inferenceType: InferenceTypeSchema,
-    notes: z.string().optional(),
-    lastReviewedAt: ISODateStringSchema.nullable().optional(),
-  });
+export const FieldAnnotationSchema = z.object({
+  status: AnnotationStatusSchema,
+  confidence: ConfidenceSchema,
+  basis: EvidenceBasisSchema,
+  sources: z.array(EvidenceReferenceSchema),
+  notes: z.string().optional(),
+  lastReviewedAt: ISODateStringSchema.nullable().optional(),
+});
+export type FieldAnnotation = z.infer<typeof FieldAnnotationSchema>;
+
+export const BrandAnnotationsSchema = z.record(BrandFieldPathSchema, FieldAnnotationSchema);
+export type BrandAnnotations = z.infer<typeof BrandAnnotationsSchema>;
 
 export const SeedInputSchema = z.object({
   kind: EvidenceKindSchema,
@@ -262,7 +260,7 @@ export const DiscoveredMaterialSchema = z.object({
 export type DiscoveredMaterial = z.infer<typeof DiscoveredMaterialSchema>;
 
 export const BrandDiscoverySchema = z.object({
-  website: WebsiteDiscoverySchema,
+  website: WebsiteDiscoverySchema.optional(),
   materials: z.array(DiscoveredMaterialSchema),
   unresolvedQuestions: z.array(z.string()),
   excludedMaterials: z.array(z.string()),
@@ -286,25 +284,25 @@ export const UserNeedSchema = z.object({
 export type UserNeed = z.infer<typeof UserNeedSchema>;
 
 export const AddressFormPolicySchema = z.object({
-  linguisticForm: createSourcedValueSchema(z.string()),
-  normalizedForm: createSourcedValueSchema(AddressFormKindSchema),
-  notes: createSourcedValueSchema(z.string()),
+  linguisticForm: NullableStringSchema,
+  normalizedForm: AddressFormKindSchema.nullable(),
+  notes: NullableStringSchema,
 });
 export type AddressFormPolicy = z.infer<typeof AddressFormPolicySchema>;
 
 export const RegisterPolicySchema = z.object({
-  defaultLevel: createSourcedValueSchema(RegisterLevelSchema),
-  adaptationPolicy: createSourcedValueSchema(z.string()),
+  defaultLevel: RegisterLevelSchema.nullable(),
+  adaptationPolicy: NullableStringSchema,
 });
 export type RegisterPolicy = z.infer<typeof RegisterPolicySchema>;
 
 export const ToneScenarioSchema = z.object({
-  context: createSourcedValueSchema(ToneContextSchema),
-  userState: createSourcedValueSchema(z.string()),
-  toneShift: createSourcedValueSchema(z.string()),
-  do: createSourcedValueSchema(z.array(z.string())),
-  dont: createSourcedValueSchema(z.array(z.string())),
-  channelBias: createSourcedValueSchema(z.array(BrandChannelSchema)).optional(),
+  context: ToneContextSchema,
+  userState: z.string().min(1),
+  toneShift: z.string().min(1),
+  do: z.array(z.string()),
+  dont: z.array(z.string()),
+  channelBias: z.array(BrandChannelSchema).optional(),
 });
 export type ToneScenario = z.infer<typeof ToneScenarioSchema>;
 
@@ -370,81 +368,81 @@ export const ScenarioExampleSchema = z.object({
 export type ScenarioExample = z.infer<typeof ScenarioExampleSchema>;
 
 export const CoreProfileSchema = z.object({
-  brandSummary: createSourcedValueSchema(z.string()),
-  missionOrPromise: createSourcedValueSchema(z.string()),
-  brandSelfImage: createSourcedValueSchema(z.string()),
-  categoryContext: createSourcedValueSchema(z.string()),
-  personalityTraits: createSourcedValueSchema(z.array(z.string())),
-  antiTraits: createSourcedValueSchema(z.array(z.string())),
+  brandSummary: NullableStringSchema,
+  missionOrPromise: NullableStringSchema,
+  brandSelfImage: NullableStringSchema,
+  categoryContext: NullableStringSchema,
+  personalityTraits: z.array(z.string()),
+  antiTraits: z.array(z.string()),
 });
 export type CoreProfile = z.infer<typeof CoreProfileSchema>;
 
 export const AudienceProfileSchema = z.object({
-  primarySegments: createSourcedValueSchema(z.array(AudienceSegmentSchema)),
-  secondarySegments: createSourcedValueSchema(z.array(AudienceSegmentSchema)),
-  literacyOrDomainAssumptions: createSourcedValueSchema(z.string()),
-  globalAudienceNotes: createSourcedValueSchema(z.string()),
-  userNeedsPriority: createSourcedValueSchema(z.array(UserNeedSchema)),
+  primarySegments: z.array(AudienceSegmentSchema),
+  secondarySegments: z.array(AudienceSegmentSchema),
+  literacyOrDomainAssumptions: NullableStringSchema,
+  globalAudienceNotes: NullableStringSchema,
+  userNeedsPriority: z.array(UserNeedSchema),
 });
 export type AudienceProfile = z.infer<typeof AudienceProfileSchema>;
 
 export const RelationshipProfileSchema = z.object({
   addressForm: AddressFormPolicySchema,
   register: RegisterPolicySchema,
-  role: createSourcedValueSchema(RelationshipRoleSchema),
-  stance: createSourcedValueSchema(z.string()),
-  authorityLevel: createSourcedValueSchema(AuthorityLevelSchema),
-  customerView: createSourcedValueSchema(z.string()),
-  pronounPolicy: createSourcedValueSchema(z.string()),
-  humorDistance: createSourcedValueSchema(HumorDistanceSchema),
+  role: RelationshipRoleSchema.nullable(),
+  stance: NullableStringSchema,
+  authorityLevel: AuthorityLevelSchema.nullable(),
+  customerView: NullableStringSchema,
+  pronounPolicy: NullableStringSchema,
+  humorDistance: HumorDistanceSchema.nullable(),
 });
 export type RelationshipProfile = z.infer<typeof RelationshipProfileSchema>;
 
 export const VoiceProfileSchema = z.object({
-  constantTraits: createSourcedValueSchema(z.array(z.string())),
-  antiTraits: createSourcedValueSchema(z.array(z.string())),
-  jargonPolicy: createSourcedValueSchema(z.string()),
-  claimsPolicy: createSourcedValueSchema(z.string()),
-  personalityGuardrails: createSourcedValueSchema(z.array(z.string())),
+  constantTraits: z.array(z.string()),
+  antiTraits: z.array(z.string()),
+  jargonPolicy: NullableStringSchema,
+  claimsPolicy: NullableStringSchema,
+  personalityGuardrails: z.array(z.string()),
 });
 export type VoiceProfile = z.infer<typeof VoiceProfileSchema>;
 
 export const MessagingProfileSchema = z.object({
-  primaryObjectives: createSourcedValueSchema(z.array(MessagingObjectiveSchema)),
-  messageHierarchy: createSourcedValueSchema(z.array(MessageLayerSchema)),
-  structureRules: createSourcedValueSchema(z.array(z.string())),
-  terminologyRules: createSourcedValueSchema(z.array(TerminologyRuleSchema)),
-  ctaStyle: createSourcedValueSchema(z.string()),
-  evidenceAndClaimsRules: createSourcedValueSchema(z.array(z.string())),
-  localizationRules: createSourcedValueSchema(z.array(z.string())),
+  primaryObjectives: z.array(MessagingObjectiveSchema),
+  messageHierarchy: z.array(MessageLayerSchema),
+  structureRules: z.array(z.string()),
+  terminologyRules: z.array(TerminologyRuleSchema),
+  ctaStyle: NullableStringSchema,
+  evidenceAndClaimsRules: z.array(z.string()),
+  localizationRules: z.array(z.string()).nullable(),
 });
 export type MessagingProfile = z.infer<typeof MessagingProfileSchema>;
 
 export const VisualProfileSchema = z.object({
-  logoRules: createSourcedValueSchema(z.array(z.string())),
-  colorSystem: createSourcedValueSchema(z.array(ColorTokenSchema)),
-  typographySystem: createSourcedValueSchema(z.array(TypographyRuleSchema)),
-  imageryOrSymbolRules: createSourcedValueSchema(z.array(z.string())),
-  accessibilityRules: createSourcedValueSchema(z.array(z.string())),
-  coBrandingRules: createSourcedValueSchema(z.array(z.string())),
+  logoRules: z.array(z.string()),
+  colorSystem: z.array(ColorTokenSchema),
+  typographySystem: z.array(TypographyRuleSchema),
+  imageryOrSymbolRules: z.array(z.string()),
+  accessibilityRules: z.array(z.string()),
+  coBrandingRules: z.array(z.string()),
 });
 export type VisualProfile = z.infer<typeof VisualProfileSchema>;
 
 export const GovernanceProfileSchema = z.object({
-  appliesTo: createSourcedValueSchema(z.array(BrandChannelSchema)),
-  sourceOfTruth: createSourcedValueSchema(z.array(z.string())),
-  precedenceRules: createSourcedValueSchema(z.array(z.string())),
-  owners: createSourcedValueSchema(z.array(GovernanceOwnerSchema)),
-  approvalRules: createSourcedValueSchema(z.array(z.string())),
-  reviewCycle: createSourcedValueSchema(z.string()),
-  exceptionsPolicy: createSourcedValueSchema(z.string()),
+  appliesTo: z.array(BrandChannelSchema),
+  sourceOfTruth: z.array(z.string()),
+  precedenceRules: z.array(z.string()),
+  owners: z.array(GovernanceOwnerSchema),
+  approvalRules: z.array(z.string()).nullable(),
+  reviewCycle: NullableStringSchema,
+  exceptionsPolicy: NullableStringSchema,
 });
 export type GovernanceProfile = z.infer<typeof GovernanceProfileSchema>;
 
 export const ExamplesProfileSchema = z.object({
-  doDontPairs: createSourcedValueSchema(z.array(DoDontPairSchema)),
-  channelExamples: createSourcedValueSchema(z.array(ChannelExampleSchema)),
-  scenarioExamples: createSourcedValueSchema(z.array(ScenarioExampleSchema)),
+  doDontPairs: z.array(DoDontPairSchema),
+  channelExamples: z.array(ChannelExampleSchema),
+  scenarioExamples: z.array(ScenarioExampleSchema),
 });
 export type ExamplesProfile = z.infer<typeof ExamplesProfileSchema>;
 
@@ -506,24 +504,28 @@ export const EvidenceItemSchema = z.object({
 });
 export type EvidenceItem = z.infer<typeof EvidenceItemSchema>;
 
-export const GenerationMetadataSchema = z.object({
+export const BrandAuditSchema = z.object({
+  discovery: BrandDiscoverySchema.optional(),
   reviewStatus: ReviewStatusSchema,
   overallConfidence: ConfidenceSchema,
   completeness: z.number().min(0).max(1),
   openQuestions: z.array(z.string()),
   assumptions: z.array(z.string()),
-  missingFieldPaths: z.array(z.string()),
+  missingFieldPaths: z.array(BrandFieldPathSchema),
   warnings: z.array(z.string()),
   generatedAt: ISODateStringSchema.optional(),
   lastHumanReviewAt: ISODateStringSchema.optional(),
 });
-export type GenerationMetadata = z.infer<typeof GenerationMetadataSchema>;
+export type BrandAudit = z.infer<typeof BrandAuditSchema>;
 
-export const BrandIdDraftSchema = z.object({
+export const BrandIdDocumentSchema = z.object({
   meta: BrandIdMetaSchema,
-  discovery: BrandDiscoverySchema,
   profile: BrandProfileSchema,
   evidence: z.array(EvidenceItemSchema),
-  generation: GenerationMetadataSchema,
+  annotations: BrandAnnotationsSchema,
+  audit: BrandAuditSchema,
 });
-export type BrandIdDraft = z.infer<typeof BrandIdDraftSchema>;
+export type BrandIdDocument = z.infer<typeof BrandIdDocumentSchema>;
+
+export const BrandIdDraftSchema = BrandIdDocumentSchema;
+export type BrandIdDraft = BrandIdDocument;

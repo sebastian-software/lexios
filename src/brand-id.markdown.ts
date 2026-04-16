@@ -1,6 +1,6 @@
 import { stringify as stringifyYaml } from "yaml";
 
-import { BrandIdDraftSchema, type BrandIdDraft, type SourcedValue } from "./brand-id.schema.js";
+import { BrandIdDraftSchema, type BrandIdDraft } from "./brand-id.schema.js";
 
 const PROFILE_SECTION_ORDER = [
   "core",
@@ -18,17 +18,6 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function isSourcedValue(value: unknown): value is SourcedValue<unknown> {
-  return (
-    isPlainObject(value) &&
-    "value" in value &&
-    "status" in value &&
-    "confidence" in value &&
-    "sources" in value &&
-    "inferenceType" in value
-  );
-}
-
 function humanizeKey(key: string): string {
   return key
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
@@ -37,7 +26,7 @@ function humanizeKey(key: string): string {
 }
 
 function formatInlineValue(value: unknown): string {
-  if (value === null) {
+  if (value === null || value === undefined) {
     return "`not_specified`";
   }
 
@@ -59,40 +48,6 @@ function renderYamlBlock(value: unknown, indent = 0): string[] {
   return [`${prefix}\`\`\`yaml`, ...yaml.split("\n").map((line) => `${prefix}${line}`), `${prefix}\`\`\``];
 }
 
-function renderSourcedField(name: string, field: SourcedValue<unknown>, indent = 0): string[] {
-  const lines: string[] = [];
-  const prefix = " ".repeat(indent);
-  const showMetadata =
-    field.value === null ||
-    field.status !== "confirmed" ||
-    field.confidence.label !== "high" ||
-    field.inferenceType !== "quoted";
-
-  if (
-    field.value === null ||
-    typeof field.value === "string" ||
-    typeof field.value === "number" ||
-    typeof field.value === "boolean"
-  ) {
-    lines.push(`${prefix}- \`${name}\`: ${formatInlineValue(field.value)}`);
-  } else {
-    lines.push(`${prefix}- \`${name}\`:`);
-    lines.push(...renderYamlBlock(field.value, indent + 2));
-  }
-
-  if (showMetadata) {
-    lines.push(
-      `${prefix}  - _status=${field.status} | inference=${field.inferenceType} | confidence=${field.confidence.label}:${field.confidence.score.toFixed(2)}_`,
-    );
-  }
-
-  if (showMetadata && field.sources.length > 0) {
-    lines.push(`${prefix}  - sources: ${field.sources.map((source) => source.evidenceId).join(", ")}`);
-  }
-
-  return lines;
-}
-
 function renderArrayField(name: string, value: unknown[], indent = 0): string[] {
   const prefix = " ".repeat(indent);
 
@@ -101,10 +56,7 @@ function renderArrayField(name: string, value: unknown[], indent = 0): string[] 
   }
 
   if (value.every((item) => typeof item === "string" || typeof item === "number" || typeof item === "boolean")) {
-    return [
-      `${prefix}- \`${name}\`:`,
-      ...value.map((item) => `${prefix}  - ${String(item)}`),
-    ];
+    return [`${prefix}- \`${name}\`:`, ...value.map((item) => `${prefix}  - ${String(item)}`)];
   }
 
   return [`${prefix}- \`${name}\`:`, ...renderYamlBlock(value, indent + 2)];
@@ -112,9 +64,15 @@ function renderArrayField(name: string, value: unknown[], indent = 0): string[] 
 
 function renderObjectField(name: string, value: Record<string, unknown>, indent = 0): string[] {
   const prefix = " ".repeat(indent);
+  const entries = Object.entries(value);
+
+  if (entries.length === 0) {
+    return [`${prefix}- \`${name}\`: {}`];
+  }
+
   const lines: string[] = [`${prefix}- \`${name}\`:`];
 
-  for (const [childName, childValue] of Object.entries(value)) {
+  for (const [childName, childValue] of entries) {
     lines.push(...renderField(childName, childValue, indent + 2));
   }
 
@@ -122,10 +80,6 @@ function renderObjectField(name: string, value: Record<string, unknown>, indent 
 }
 
 function renderField(name: string, value: unknown, indent = 0): string[] {
-  if (isSourcedValue(value)) {
-    return renderSourcedField(name, value, indent);
-  }
-
   if (Array.isArray(value)) {
     return renderArrayField(name, value, indent);
   }
@@ -143,50 +97,40 @@ export function renderBrandIdMarkdown(input: BrandIdDraft): string {
   const lines: string[] = [
     `# Brand ID: ${draft.meta.brandName}`,
     "",
-    `Stand: ${draft.meta.updatedAt}`,
+    `schema: ${draft.meta.schema.id}@${draft.meta.schema.version}`,
+    `updatedAt: ${draft.meta.updatedAt}`,
     "",
     "## Meta",
-    ...renderField("schema", draft.meta.schema),
     ...renderField("brandSlug", draft.meta.brandSlug),
+    ...renderField("legalEntityName", draft.meta.legalEntityName ?? null),
+    ...renderField("canonicalDomain", draft.meta.canonicalDomain ?? null),
     ...renderField("status", draft.meta.status),
     ...renderField("primaryLocale", draft.meta.primaryLocale ?? null),
     ...renderField("supportedLocales", draft.meta.supportedLocales),
     ...renderField("seedInputs", draft.meta.seedInputs),
     ...renderField("tags", draft.meta.tags),
-    "",
-    "## Discovery",
-    ...renderField("website", draft.discovery.website),
-    ...renderField("materials", draft.discovery.materials),
-    ...renderField("unresolvedQuestions", draft.discovery.unresolvedQuestions),
-    ...renderField("excludedMaterials", draft.discovery.excludedMaterials),
   ];
 
   for (const sectionName of PROFILE_SECTION_ORDER) {
-    lines.push("", `## ${humanizeKey(sectionName)}`);
-
-    if (sectionName === "toneMatrix") {
-      lines.push(...renderField(sectionName, draft.profile.toneMatrix));
-      continue;
-    }
-
-    lines.push(...renderField(sectionName, draft.profile[sectionName]));
+    lines.push("", `## Profile.${sectionName}`, ...renderField(sectionName, draft.profile[sectionName]));
   }
 
   lines.push(
     "",
+    "## Profile.localeOverrides",
+    ...renderField("localeOverrides", draft.profile.localeOverrides),
+    "",
+    "## Profile.customSections",
+    ...renderField("customSections", draft.profile.customSections),
+    "",
     "## Evidence",
     ...renderField("evidence", draft.evidence),
     "",
-    "## Generation",
-    ...renderField("reviewStatus", draft.generation.reviewStatus),
-    ...renderField("overallConfidence", draft.generation.overallConfidence),
-    ...renderField("completeness", draft.generation.completeness),
-    ...renderField("openQuestions", draft.generation.openQuestions),
-    ...renderField("assumptions", draft.generation.assumptions),
-    ...renderField("missingFieldPaths", draft.generation.missingFieldPaths),
-    ...renderField("warnings", draft.generation.warnings),
-    ...renderField("generatedAt", draft.generation.generatedAt ?? null),
-    ...renderField("lastHumanReviewAt", draft.generation.lastHumanReviewAt ?? null),
+    "## Annotations",
+    ...renderField("annotations", draft.annotations),
+    "",
+    "## Audit",
+    ...renderField("audit", draft.audit),
   );
 
   return `${lines.join("\n")}\n`;

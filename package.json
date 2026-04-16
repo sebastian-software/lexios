@@ -1,0 +1,59 @@
+{
+  "name": "lexios",
+  "version": "0.1.0",
+  "description": "Zod-first Brand ID schema, YAML exchange layer, and agent-facing Markdown export.",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./brand-id": {
+      "types": "./dist/brand-id.d.ts",
+      "import": "./dist/brand-id.js"
+    },
+    "./schema": {
+      "types": "./dist/brand-id.schema.d.ts",
+      "import": "./dist/brand-id.schema.js"
+    },
+    "./yaml": {
+      "types": "./dist/brand-id.yaml.d.ts",
+      "import": "./dist/brand-id.yaml.js"
+    },
+    "./markdown": {
+      "types": "./dist/brand-id.markdown.d.ts",
+      "import": "./dist/brand-id.markdown.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
+  },
+  "keywords": [
+    "brand",
+    "branding",
+    "content-design",
+    "schema",
+    "typescript"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "yaml": "^2.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

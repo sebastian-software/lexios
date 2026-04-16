@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const BrandIdSchemaVersionSchema = z.literal("0.2.0");
+export const BrandIdSchemaVersionSchema = z.literal("0.3.0");
 export type BrandIdSchemaVersion = z.infer<typeof BrandIdSchemaVersionSchema>;
 
 export const ISODateStringSchema = z.string().min(1);
@@ -179,6 +179,29 @@ export type MessagingObjective = z.infer<typeof MessagingObjectiveSchema>;
 export const KnowledgeLevelSchema = z.enum(["general", "aware", "practitioner", "expert", "mixed"]);
 export type KnowledgeLevel = z.infer<typeof KnowledgeLevelSchema>;
 
+export const LexiconEntryKindSchema = z.enum([
+  "brand",
+  "product",
+  "service",
+  "feature",
+  "method",
+  "program",
+  "legal",
+  "industry",
+  "people",
+  "other",
+]);
+export type LexiconEntryKind = z.infer<typeof LexiconEntryKindSchema>;
+
+export const LexiconTranslationPolicySchema = z.enum([
+  "translate",
+  "do_not_translate",
+  "transcreate",
+  "locale_specific",
+  "not_specified",
+]);
+export type LexiconTranslationPolicy = z.infer<typeof LexiconTranslationPolicySchema>;
+
 const NullableStringSchema = z.string().nullable();
 
 export const ConfidenceSchema = z.object({
@@ -321,6 +344,21 @@ export const TerminologyRuleSchema = z.object({
 });
 export type TerminologyRule = z.infer<typeof TerminologyRuleSchema>;
 
+export const LexiconEntrySchema = z.object({
+  term: z.string().min(1),
+  definition: z.string().min(1),
+  kind: LexiconEntryKindSchema,
+  canonicalSpelling: z.string().optional(),
+  aliases: z.array(z.string()).optional(),
+  forbiddenVariants: z.array(z.string()).optional(),
+  casingRule: z.string().optional(),
+  usage: z.string().optional(),
+  contexts: z.array(z.string()).optional(),
+  translationPolicy: LexiconTranslationPolicySchema.optional(),
+  notes: z.string().optional(),
+});
+export type LexiconEntry = z.infer<typeof LexiconEntrySchema>;
+
 export const ColorTokenSchema = z.object({
   name: z.string().min(1),
   value: z.string().optional(),
@@ -407,6 +445,12 @@ export const VoiceProfileSchema = z.object({
 });
 export type VoiceProfile = z.infer<typeof VoiceProfileSchema>;
 
+export const LexiconProfileSchema = z.object({
+  entries: z.array(LexiconEntrySchema),
+  generalRules: z.array(z.string()),
+});
+export type LexiconProfile = z.infer<typeof LexiconProfileSchema>;
+
 export const MessagingProfileSchema = z.object({
   primaryObjectives: z.array(MessagingObjectiveSchema),
   messageHierarchy: z.array(MessageLayerSchema),
@@ -451,6 +495,7 @@ export const BrandProfileSectionKeySchema = z.enum([
   "audience",
   "relationship",
   "voice",
+  "lexicon",
   "toneMatrix",
   "messaging",
   "visual",
@@ -464,6 +509,7 @@ export const BrandProfileSectionsSchema = z.object({
   audience: AudienceProfileSchema,
   relationship: RelationshipProfileSchema,
   voice: VoiceProfileSchema,
+  lexicon: LexiconProfileSchema,
   toneMatrix: z.array(ToneScenarioSchema),
   messaging: MessagingProfileSchema,
   visual: VisualProfileSchema,

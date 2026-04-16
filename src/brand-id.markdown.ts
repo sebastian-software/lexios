@@ -7,6 +7,7 @@ const PROFILE_SECTION_ORDER = [
   "audience",
   "relationship",
   "voice",
+  "lexicon",
   "toneMatrix",
   "messaging",
   "visual",

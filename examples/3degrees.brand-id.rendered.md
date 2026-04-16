@@ -1,6 +1,6 @@
 # Brand ID: 3Degrees
 
-schema: brand-id@0.2.0
+schema: brand-id@0.3.0
 updatedAt: 2026-04-15
 
 ## Meta
@@ -141,6 +141,31 @@ updatedAt: 2026-04-15
     - Inspire action without overstatement.
     - Focus on climate-positive progress and action.
     - Use humor only where appropriate.
+
+## Profile.lexicon
+- `lexicon`:
+  - `entries`:
+    ```yaml
+    - term: Supplier REach
+      definition: Company-specific product or program name that should retain its canonical spelling in content.
+      kind: product
+      canonicalSpelling: Supplier REach
+      forbiddenVariants:
+        - Supplier Reach
+        - Supplier reach
+      casingRule: Use uppercase R and E in REach.
+      usage: Treat as a named offering or product term, not as a generic phrase.
+      contexts:
+        - product copy
+        - website
+        - sales
+      translationPolicy: do_not_translate
+      notes: User-provided terminology example; definition and exact business scope should be verified with 3Degrees.
+    ```
+  - `generalRules`:
+    - Preserve canonical spelling for named products, programs, and proprietary concepts.
+    - Explain company-specific terms when the audience may not already know them.
+    - Flag non-canonical casing or spacing during automated brand review.
 
 ## Profile.toneMatrix
 - `toneMatrix`:
@@ -417,6 +442,19 @@ updatedAt: 2026-04-15
       - brand-guide
       - communication
       - visual-identity
+  - id: D2
+    kind: manual_note
+    title: User-provided 3Degrees terminology note
+    officiality: semi_official
+    access: manual_entry
+    publisher: User
+    language: en-US
+    summary: User noted Supplier REach as an example of company-specific terminology with non-standard casing.
+    capturedAt: 2026-04-16
+    tags:
+      - lexicon
+      - terminology
+      - manual-note
   ```
 
 ## Annotations
@@ -517,6 +555,17 @@ updatedAt: 2026-04-15
         locator: pp. 34-35
       ```
     - `notes`: Voice guidance is strongly supported by the communications standards section.
+  - `/profile/lexicon`:
+    - `status`: needs_review
+    - `confidence`:
+      - `score`: 0.45
+      - `label`: medium
+    - `basis`: manual
+    - `sources`:
+      ```yaml
+      - evidenceId: D2
+      ```
+    - `notes`: Supplier REach was added as a manual terminology example and should be verified against official product materials.
   - `/profile/toneMatrix/0`:
     - `status`: mixed
     - `confidence`:
@@ -714,10 +763,12 @@ updatedAt: 2026-04-15
     - What direct second-person policy should be used in customer-facing copy?
     - Are there localization or translation-specific rules outside this guide?
     - What is the formal approval path for exceptions or major brand changes?
+    - What is the exact definition and official scope of Supplier REach?
   - `assumptions`:
     - Business casual is normalized in the schema as a neutral register with warmth.
     - Expert partner is the closest normalized relationship role for a strategy-to-implementation climate advisor.
     - The uploaded PDF is treated as the current authoritative public-facing brand source for this example.
+    - Supplier REach is treated as a product or program term based on user-provided context, not the reviewed PDF.
   - `missingFieldPaths`:
     - /profile/relationship/addressForm/linguisticForm
     - /profile/relationship/addressForm/normalizedForm

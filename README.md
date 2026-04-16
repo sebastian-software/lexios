@@ -2,7 +2,7 @@
 
 Lexios is a standard for capturing a brand as structured, machine-readable knowledge.
 
-Most companies have brand information scattered across websites, PDFs, pitch decks, style guides, design files, onboarding docs, and the heads of a few people. That is manageable for humans, but weak input for automated content work. Translation systems, writing agents, website generators, and app-localization pipelines need a clearer source of truth:
+Most companies have brand information scattered across websites, PDFs, pitch decks, style guides, design files, onboarding docs, and the heads of a few people. That is manageable for humans, but weak input for automated content work. Writing agents, website generators, campaign tools, review workflows, and localization pipelines need a clearer source of truth:
 
 - Who is the brand?
 - What does it believe about itself?
@@ -15,20 +15,21 @@ Lexios turns that into a `Brand ID`: a validated document that describes the bra
 
 ## Why This Exists
 
-Automatic translation is not just a language problem.
+On-brand content is not just a writing problem.
 
-A technically correct translation can still be wrong for the brand. It may be too formal, too casual, too generic, too salesy, too American, too literal, or simply inconsistent with how the company sees its customers.
+A technically correct text can still be wrong for the brand. It may be too formal, too casual, too generic, too salesy, too vague, or simply inconsistent with how the company sees itself and its customers.
 
-Lexios is designed to give translation and content systems the missing brand context. Instead of asking an AI to "sound on brand" from a vague prompt, Lexios provides a structured object that says what "on brand" actually means.
+Lexios is designed to give content systems the missing brand context. Instead of asking an AI to "sound on brand" from a vague prompt, Lexios provides a structured object that says what "on brand" actually means.
 
 ## What Lexios Captures
 
-A Brand ID documents the parts of a brand that usually matter for content, translation, websites, apps, and customer communication:
+A Brand ID documents the parts of a brand that usually matter for content production, website work, app copy, campaign writing, automated review, localization, and customer communication:
 
 - `core`: brand summary, mission or promise, self-image, category context, personality, and anti-traits.
 - `audience`: primary and secondary audiences, domain knowledge, user needs, and global audience notes.
 - `relationship`: how the brand sees the customer, whether it leads as expert, peer, coach, guide, or authority, and how direct or formal it should be.
 - `voice`: stable voice traits, jargon policy, claims policy, personality guardrails, and what the brand should avoid sounding like.
+- `lexicon`: company-specific words, products, features, abbreviations, canonical spellings, definitions, and usage rules.
 - `toneMatrix`: how tone changes by situation, such as sales, onboarding, support, legal, social, partner, or crisis contexts.
 - `messaging`: message hierarchy, terminology, writing rules, CTA style, evidence rules, and localization notes.
 - `visual`: logo usage, color system, typography guidance, imagery rules, accessibility, and co-branding rules.
@@ -52,6 +53,12 @@ profile:
       - credible
       - creative
       - authentic
+  lexicon:
+    entries:
+      - term: Supplier REach
+        definition: Company-specific product or program name.
+        kind: product
+        casingRule: Use uppercase R and E in REach.
 ```
 
 Evidence lives beside it:
@@ -79,7 +86,7 @@ Lexios uses a Zod-first schema and stores Brand IDs as YAML.
 meta:
   schema:
     id: brand-id
-    version: 0.2.0
+    version: 0.3.0
   brandName: Example Brand
 
 profile:
@@ -87,6 +94,9 @@ profile:
   audience: {}
   relationship: {}
   voice: {}
+  lexicon:
+    entries: []
+    generalRules: []
   toneMatrix: []
   messaging: {}
   visual: {}
@@ -112,10 +122,11 @@ Lexios is meant to become the brand memory layer for automated content systems.
 
 Useful downstream outputs include:
 
-- translation instructions for websites and apps
+- source material for original website, app, campaign, and support content
 - agent-facing Markdown context
 - copywriting prompt context
-- localization QA rules
+- automated brand QA and review rules
+- localization and translation guidance where needed
 - brand review checklists
 - customer-facing brand summaries
 - future exports such as `SKILL.md`, JSON, or design-token-adjacent artifacts
@@ -168,4 +179,4 @@ const markdownOut = renderBrandIdMarkdown(checked);
 
 Lexios is an early schema and research workspace. It is not a deployed product yet.
 
-The current focus is to make the Brand ID model small enough to use, rich enough to represent real brand guides, and structured enough to support automated translation and content generation later.
+The current focus is to make the Brand ID model small enough to use, rich enough to represent real brand guides, and structured enough to support content generation, content review, and brand-aware automation later.

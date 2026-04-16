@@ -175,6 +175,29 @@ const yamlOut = stringifyBrandIdYaml(checked);
 const markdownOut = renderBrandIdMarkdown(checked);
 ```
 
+## React Brand Report
+
+Lexios also ships a headless React renderer for turning a Brand ID into semantic report HTML.
+The renderer validates the same `BrandIdDraft` shape and leaves styling to the host app.
+
+```tsx
+import { BrandReport } from "lexios/react";
+import { parseBrandIdYaml } from "lexios/yaml";
+
+const document = parseBrandIdYaml(yamlSource);
+
+export function App() {
+  return <BrandReport document={document} />;
+}
+```
+
+The local demo renders `examples/3degrees.brand-id.yaml` as a neutral editorial report:
+
+```bash
+npm run demo:brand-report:build
+npm exec vite -- --host 127.0.0.1 examples/react-brand-report
+```
+
 ## Current Status
 
 Lexios is an early schema and research workspace. It is not a deployed product yet.

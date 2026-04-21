@@ -44,6 +44,8 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "demo:brand-report:build": "vite build examples/react-brand-report",
+    "demo:explorations:build": "vite build examples/react-brand-report-explorations",
+    "demo:explorations:dev": "vite --host 127.0.0.1 examples/react-brand-report-explorations",
     "test:react-report": "npm run build && node scripts/smoke-react-report.mjs",
     "clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   },

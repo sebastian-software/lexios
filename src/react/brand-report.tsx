@@ -44,7 +44,7 @@ export type BrandReportProps = {
   renderSection?: Partial<Record<string, ComponentType<BrandReportSectionProps>>>;
 };
 
-const DEFAULT_SECTION_ORDER: BrandProfileSectionKey[] = [
+export const DEFAULT_SECTION_ORDER: BrandProfileSectionKey[] = [
   "core",
   "audience",
   "relationship",
@@ -57,7 +57,7 @@ const DEFAULT_SECTION_ORDER: BrandProfileSectionKey[] = [
   "examples",
 ];
 
-const SECTION_META: Record<BrandReportRenderableSectionKey, { title: string; eyebrow: string }> = {
+export const SECTION_META: Record<BrandReportRenderableSectionKey, { title: string; eyebrow: string }> = {
   core: { title: "Brand Core", eyebrow: "Identity" },
   audience: { title: "Audience Model", eyebrow: "People" },
   relationship: { title: "Relationship", eyebrow: "Stance" },

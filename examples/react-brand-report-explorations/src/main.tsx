@@ -1,8 +1,9 @@
 import { StrictMode, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 
-import brandYaml from "../../3degrees.brand-id.yaml?raw";
+import brandYaml from "../../example.brand-id.yaml?raw";
 import { parseBrandIdYaml } from "../../../src/brand-id.yaml.js";
+import { deriveMissingFieldPaths } from "../../../src/brand-id.audit.js";
 
 import "./styles.css";
 
@@ -500,82 +501,87 @@ function App() {
 
       <Row
         kicker="core"
-        title="Personality traits · anti-traits"
-        path="/profile/core/{personalityTraits,antiTraits}"
-        desc="Two arrays of short strings. The keystone of the whole record."
+        title="Trait spectrum"
+        path="/profile/core/traitSpectrum[]"
+        desc="Array of {positivePole, negativePole, weight, note?, icon?}. The keystone of the whole record."
       >
-        <Cell label="Pills (pos + neg)">
-          <div>
-            {p.core.personalityTraits.map((t) => (
-              <span className="pill" key={t}>
-                {t}
-              </span>
-            ))}
-          </div>
-          <div style={{ marginTop: "0.4rem" }}>
-            {p.core.antiTraits.map((t) => (
-              <span className="pill pill--anti" key={t}>
-                {t}
-              </span>
-            ))}
-          </div>
-        </Cell>
-        <Cell label="Word cloud (sized)">
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem 0.5rem", alignItems: "baseline" }}>
-            {p.core.personalityTraits.map((t, i) => (
-              <span
-                key={t}
-                style={{
-                  fontFamily: "var(--f-serif)",
-                  fontSize: `${2 - i * 0.13}rem`,
-                  fontWeight: 500,
-                  lineHeight: 1,
-                }}
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </Cell>
-        <Cell label="Polar chart (pos + neg)">
-          <PolarChart items={p.core.personalityTraits} anti={p.core.antiTraits} />
-        </Cell>
-        <Cell label="Ranked list">
-          <ol style={{ margin: 0, paddingLeft: "1.6rem", fontSize: "0.88rem" }}>
-            {p.core.personalityTraits.map((t) => (
-              <li key={t} style={{ margin: "0.1rem 0" }}>
-                {t}
-              </li>
-            ))}
-            {p.core.antiTraits.map((t) => (
-              <li key={`a-${t}`} style={{ margin: "0.1rem 0", color: "#a12525", textDecoration: "line-through" }}>
-                {t}
-              </li>
-            ))}
-          </ol>
-        </Cell>
-        <Cell label="Spectrum (pos ↔ neg)">
-          <div>
-            {p.core.personalityTraits.slice(0, 5).map((t, i) => {
-              const anti = p.core.antiTraits[i] ?? "—";
-              return (
-                <div key={t} style={{ display: "grid", gridTemplateColumns: "1fr 12px 1fr", gap: "0.4rem", alignItems: "center", padding: "0.25rem 0", fontSize: "0.82rem" }}>
-                  <div style={{ textAlign: "right", color: "var(--good)" }}>{t}</div>
-                  <div style={{ textAlign: "center", color: "var(--ink-faint)" }}>↔</div>
-                  <div style={{ color: "var(--bad)", textDecoration: "line-through" }}>{anti}</div>
+        <Cell label="Weighted scales">
+          <div style={{ display: "grid", gap: "0.35rem" }}>
+            {p.core.traitSpectrum.map((pair) => (
+              <div key={`${pair.positivePole}-${pair.negativePole}`} style={{ fontSize: "0.8rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                  <span>{pair.positivePole}</span>
+                  <span className="muted">{pair.negativePole}</span>
                 </div>
+                <div style={{ position: "relative", height: 4, background: "var(--rule)", borderRadius: 2 }}>
+                  <span className="pin" style={{ left: `${((pair.weight + 1) / 2) * 100}%`, top: "50%" }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </Cell>
+        <Cell label="Radar (axes = pairs)" hint="Each axis is a TraitPair. Spoke length = weight.">
+          <svg viewBox="0 0 240 240" style={{ width: "100%", height: "auto" }}>
+            <circle cx={120} cy={120} r={80} fill="none" stroke="var(--rule)" strokeDasharray="2 3" />
+            <circle cx={120} cy={120} r={40} fill="none" stroke="var(--rule-soft)" strokeDasharray="2 3" />
+            <circle cx={120} cy={120} r={3} fill="var(--ink)" />
+            {p.core.traitSpectrum.map((pair, i, arr) => {
+              const a = (i / arr.length) * Math.PI * 2 - Math.PI / 2;
+              const rOuter = 80;
+              const xEnd = 120 + Math.cos(a) * rOuter;
+              const yEnd = 120 + Math.sin(a) * rOuter;
+              const xPt = 120 + Math.cos(a) * rOuter * Math.max(0, pair.weight);
+              const yPt = 120 + Math.sin(a) * rOuter * Math.max(0, pair.weight);
+              return (
+                <g key={`${pair.positivePole}-${pair.negativePole}`}>
+                  <line x1={120} y1={120} x2={xEnd} y2={yEnd} stroke="var(--rule)" strokeWidth={0.5} />
+                  <circle cx={xPt} cy={yPt} r={3} fill="var(--ink)" />
+                  <text
+                    x={120 + Math.cos(a) * (rOuter + 10)}
+                    y={120 + Math.sin(a) * (rOuter + 10)}
+                    textAnchor={Math.cos(a) > 0.2 ? "start" : Math.cos(a) < -0.2 ? "end" : "middle"}
+                    dominantBaseline="middle"
+                    style={{ font: "9px var(--f-ui)" }}
+                  >
+                    {pair.positivePole}
+                  </text>
+                </g>
               );
             })}
-          </div>
+          </svg>
         </Cell>
-        <Cell label="Typographic list">
-          <div style={{ fontFamily: "var(--f-serif)", fontSize: "1.8rem", fontWeight: 500, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
-            {p.core.personalityTraits.join(", ")}
-            <span style={{ color: "var(--bad)", opacity: 0.45, textDecoration: "line-through", fontStyle: "italic" }}>
-              {" "}
-              / {p.core.antiTraits.slice(0, 3).join(", ")}
-            </span>
-          </div>
+        <Cell label="Sorted by weight">
+          <ol style={{ margin: 0, paddingLeft: "1.6rem", fontSize: "0.82rem" }}>
+            {[...p.core.traitSpectrum]
+              .sort((a, b) => b.weight - a.weight)
+              .map((pair) => (
+                <li key={`${pair.positivePole}-${pair.negativePole}`}>
+                  <span style={{ fontWeight: 500 }}>{pair.positivePole}</span>
+                  <span className="muted"> / {pair.negativePole}</span>
+                  <span className="mono small muted"> · {pair.weight.toFixed(2)}</span>
+                </li>
+              ))}
+          </ol>
+        </Cell>
+        <Cell label="Pole table">
+          <table style={{ width: "100%", fontSize: "0.78rem", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "left", padding: "0.15rem 0.3rem", borderBottom: "1px solid var(--rule)", fontWeight: 500 }}>+</th>
+                <th style={{ textAlign: "left", padding: "0.15rem 0.3rem", borderBottom: "1px solid var(--rule)", fontWeight: 500 }}>−</th>
+                <th style={{ textAlign: "right", padding: "0.15rem 0.3rem", borderBottom: "1px solid var(--rule)", fontWeight: 500 }}>w</th>
+              </tr>
+            </thead>
+            <tbody>
+              {p.core.traitSpectrum.map((pair) => (
+                <tr key={`${pair.positivePole}-${pair.negativePole}`}>
+                  <td style={{ padding: "0.15rem 0.3rem", color: "var(--good)" }}>{pair.positivePole}</td>
+                  <td style={{ padding: "0.15rem 0.3rem", color: "var(--bad)", textDecoration: "line-through" }}>{pair.negativePole}</td>
+                  <td className="mono small" style={{ padding: "0.15rem 0.3rem", textAlign: "right" }}>{pair.weight.toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Cell>
       </Row>
 
@@ -604,7 +610,7 @@ function App() {
                   <td style={{ padding: "0.25rem 0.35rem", borderBottom: "1px solid var(--rule-soft)" }}>{s.name}</td>
                   <td style={{ padding: "0.25rem 0.35rem", borderBottom: "1px solid var(--rule-soft)" }}>{s.knowledgeLevel}</td>
                   <td style={{ padding: "0.25rem 0.35rem", borderBottom: "1px solid var(--rule-soft)", color: "var(--ink-soft)" }}>
-                    {s.needs?.slice(0, 1).join(", ")}
+                    {s.needsPriority[0]?.label ?? "—"}
                   </td>
                 </tr>
               ))}
@@ -662,7 +668,7 @@ function App() {
               const lvlIdx = ["general", "aware", "mixed", "practitioner", "expert"].indexOf(s.knowledgeLevel ?? "mixed");
               const cx = 60 + i * 60;
               const cy = 150 - (lvlIdx < 0 ? 60 : lvlIdx * 30);
-              const rad = 10 + (s.needs?.length ?? 0) * 3;
+              const rad = 10 + s.needsPriority.length * 3;
               return (
                 <g key={s.name}>
                   <circle cx={cx} cy={cy} r={rad} fill="#1a1a1d" fillOpacity={0.15} stroke="#1a1a1d" />
@@ -680,7 +686,7 @@ function App() {
               <div
                 key={s.name}
                 style={{
-                  flex: s.needs?.length ?? 1,
+                  flex: s.needsPriority.length || 1,
                   background: `hsl(${220 + i * 30}, 10%, ${80 - i * 6}%)`,
                   color: "#1a1a1d",
                   padding: "0.25rem 0.4rem",
@@ -695,64 +701,79 @@ function App() {
             ))}
           </div>
           <div className="small muted" style={{ marginTop: "0.35rem" }}>
-            Width = needs.length
+            Width = needsPriority.length
           </div>
         </Cell>
       </Row>
 
-      {/* ────────── USER NEEDS PRIORITY ────────── */}
+      {/* ────────── USER NEEDS PER SEGMENT ────────── */}
 
       <Row
         kicker="audience"
-        title="User needs priority"
-        path="/profile/audience/userNeedsPriority[]"
-        desc="Array of {label, type, priority}. Ordered."
+        title="User needs per segment"
+        path="/profile/audience/primarySegments[]/needsPriority[]"
+        desc="Needs are now attached to each segment. Same visuals, but per persona."
       >
-        <Cell label="Ordered list">
-          <ol style={{ margin: 0, paddingLeft: "1.6rem", fontSize: "0.85rem" }}>
-            {[...p.audience.userNeedsPriority]
-              .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99))
-              .map((n) => (
-                <li key={n.label} style={{ margin: "0.15rem 0" }}>
-                  <span className="mono small muted" style={{ marginRight: 6 }}>
-                    [{n.type}]
-                  </span>
-                  {n.label}
-                </li>
-              ))}
-          </ol>
-        </Cell>
-        <Cell label="Priority funnel" hint="Width ∝ priority (inverse).">
-          <div>
-            {[...p.audience.userNeedsPriority]
-              .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99))
-              .map((n, i, arr) => {
-                const pct = 100 - (i / arr.length) * 55;
-                return (
-                  <div
-                    key={n.label}
-                    style={{
-                      width: `${pct}%`,
-                      margin: "0 auto 0.2rem",
-                      padding: "0.3rem 0.5rem",
-                      background: "var(--surface)",
-                      border: "1px solid var(--rule)",
-                      borderRadius: 3,
-                      fontSize: "0.78rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    <span className="mono small muted">{n.priority}</span> · {n.label.slice(0, 50)}
-                    {n.label.length > 50 ? "…" : ""}
-                  </div>
-                );
-              })}
+        <Cell label="Ordered lists per segment">
+          <div style={{ display: "grid", gap: "0.6rem" }}>
+            {p.audience.primarySegments.map((s) => (
+              <div key={s.name}>
+                <div className="mono small muted">{s.name}</div>
+                <ol style={{ margin: 0, paddingLeft: "1.4rem", fontSize: "0.82rem" }}>
+                  {[...s.needsPriority]
+                    .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99))
+                    .map((n) => (
+                      <li key={n.label}>
+                        <span className="mono small muted" style={{ marginRight: 6 }}>
+                          [{n.type}]
+                        </span>
+                        {n.label}
+                      </li>
+                    ))}
+                </ol>
+              </div>
+            ))}
           </div>
         </Cell>
-        <Cell label="By type (kanban)">
+        <Cell label="Priority funnel per segment">
+          <div style={{ display: "grid", gap: "0.6rem" }}>
+            {p.audience.primarySegments.map((s) => {
+              const sorted = [...s.needsPriority].sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99));
+              return (
+                <div key={s.name}>
+                  <div className="mono small muted" style={{ marginBottom: 4 }}>{s.name}</div>
+                  {sorted.map((n, i) => {
+                    const pct = 100 - (i / Math.max(1, sorted.length)) * 55;
+                    return (
+                      <div
+                        key={n.label}
+                        style={{
+                          width: `${pct}%`,
+                          margin: "0 auto 0.2rem",
+                          padding: "0.25rem 0.45rem",
+                          background: "var(--surface)",
+                          border: "1px solid var(--rule)",
+                          borderRadius: 3,
+                          fontSize: "0.74rem",
+                          textAlign: "center",
+                        }}
+                      >
+                        <span className="mono small muted">{n.priority ?? "—"}</span> · {n.label.slice(0, 42)}
+                        {n.label.length > 42 ? "…" : ""}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </Cell>
+        <Cell label="Aggregated kanban (all segments)" hint="Rolled up across segments for an overview.">
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.4rem" }}>
-            {["intent", "task", "anxiety", "job_to_be_done"].map((tp) => {
-              const items = p.audience.userNeedsPriority.filter((n) => n.type === tp);
+            {(["intent", "task", "anxiety", "job_to_be_done"] as const).map((tp) => {
+              const items = p.audience.primarySegments.flatMap((s) =>
+                s.needsPriority.filter((n) => n.type === tp).map((n) => ({ ...n, segment: s.name })),
+              );
               return (
                 <div key={tp}>
                   <div className="mono small muted" style={{ marginBottom: "0.2rem" }}>
@@ -761,47 +782,23 @@ function App() {
                   <div style={{ display: "grid", gap: "0.2rem" }}>
                     {items.map((n) => (
                       <div
-                        key={n.label}
+                        key={`${n.segment}-${n.label}`}
                         style={{
                           background: "var(--surface)",
                           border: "1px solid var(--rule)",
                           borderRadius: 3,
                           padding: "0.25rem 0.3rem",
-                          fontSize: "0.72rem",
+                          fontSize: "0.7rem",
                         }}
                       >
                         {n.label}
+                        <div className="small muted">{n.segment}</div>
                       </div>
                     ))}
                   </div>
                 </div>
               );
             })}
-          </div>
-        </Cell>
-        <Cell label="Numbered stack (size ∝ priority)">
-          <div>
-            {[...p.audience.userNeedsPriority]
-              .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99))
-              .map((n) => (
-                <div key={n.label} style={{ display: "flex", gap: "0.6rem", alignItems: "baseline", padding: "0.3rem 0", borderBottom: "1px solid var(--rule-soft)" }}>
-                  <div
-                    style={{
-                      fontFamily: "var(--f-serif)",
-                      fontSize: `${2 - ((n.priority ?? 1) - 1) * 0.25}rem`,
-                      fontWeight: 500,
-                      minWidth: "1.5em",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {n.priority}
-                  </div>
-                  <div style={{ fontSize: "0.85rem" }}>
-                    {n.label}
-                    <div className="small muted">{n.type}</div>
-                  </div>
-                </div>
-              ))}
           </div>
         </Cell>
       </Row>
@@ -900,84 +897,42 @@ function App() {
         </Cell>
       </Row>
 
-      {/* ────────── VOICE ────────── */}
+      {/* ────────── VOICE (rules framework) ────────── */}
 
       <Row
         kicker="voice"
-        title="Voice traits + anti-traits"
-        path="/profile/voice/{constantTraits,antiTraits}"
-        desc="Like core traits, but about how the brand sounds. Often overlapping but not identical."
+        title="Voice (rules framework)"
+        path="/profile/voice/{jargonPolicy,plainLanguage,claimsPolicy,personalityGuardrails}"
+        desc="v0.4: Voice is now about *how* the brand writes — jargon default, reading level, guardrails. Traits moved to core.traitSpectrum."
       >
-        <Cell label="Pills (split)">
-          <div className="small muted" style={{ marginBottom: 4 }}>
-            constant
-          </div>
-          <div>
-            {p.voice.constantTraits.map((t) => (
-              <span className="pill" key={t}>
-                {t}
-              </span>
-            ))}
-          </div>
-          <div className="small muted" style={{ marginTop: 8, marginBottom: 4 }}>
-            anti
-          </div>
-          <div>
-            {p.voice.antiTraits.map((t) => (
-              <span className="pill pill--anti" key={t}>
-                {t}
-              </span>
-            ))}
-          </div>
+        <Cell label="Key-value">
+          <dl className="kv">
+            <dt>jargon default</dt>
+            <dd>{p.voice.jargonPolicy?.default ?? "—"}</dd>
+            <dt>reading level (FK)</dt>
+            <dd>{p.voice.plainLanguage?.readingLevel ?? "—"}</dd>
+            <dt>max sentence</dt>
+            <dd>{p.voice.plainLanguage?.maxSentenceLength ?? "—"}</dd>
+            <dt>claims</dt>
+            <dd>{p.voice.claimsPolicy ?? "—"}</dd>
+          </dl>
         </Cell>
-        <Cell label="Polar" hint="Same viz as core, shown for comparison.">
-          <PolarChart items={p.voice.constantTraits} anti={p.voice.antiTraits} />
-        </Cell>
-        <Cell label="Core vs. voice overlap" wide>
-          <div className="small muted" style={{ marginBottom: 6 }}>
-            Words that appear in both lists are the brand&apos;s throughline.
+        <Cell label="Reading-level gauge">
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: "2.8rem", fontWeight: 500, fontFamily: "var(--f-serif)", lineHeight: 1 }}>
+              {p.voice.plainLanguage?.readingLevel ?? "—"}
+            </div>
+            <div className="mono small muted">Flesch-Kincaid grade</div>
+            <div className="small muted" style={{ marginTop: 8 }}>
+              Target: {p.voice.plainLanguage?.readingLevel
+                ? p.voice.plainLanguage.readingLevel < 9
+                  ? "plain / consumer"
+                  : p.voice.plainLanguage.readingLevel < 13
+                    ? "professional"
+                    : "expert"
+                : "not specified"}
+            </div>
           </div>
-          {(() => {
-            const setA = new Set(p.core.personalityTraits.map((x) => x.toLowerCase()));
-            const setB = new Set(p.voice.constantTraits.map((x) => x.toLowerCase()));
-            const both = [...setA].filter((x) => setB.has(x));
-            const onlyCore = [...setA].filter((x) => !setB.has(x));
-            const onlyVoice = [...setB].filter((x) => !setA.has(x));
-            return (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem", fontSize: "0.82rem" }}>
-                <div>
-                  <div className="mono small muted" style={{ marginBottom: 4 }}>
-                    core only ({onlyCore.length})
-                  </div>
-                  {onlyCore.map((t) => (
-                    <span className="pill" key={t}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-                <div>
-                  <div className="mono small muted" style={{ marginBottom: 4 }}>
-                    both ({both.length})
-                  </div>
-                  {both.map((t) => (
-                    <span className="pill" key={t} style={{ background: "#f0f7ef", borderColor: "#c5e3c0" }}>
-                      ★ {t}
-                    </span>
-                  ))}
-                </div>
-                <div>
-                  <div className="mono small muted" style={{ marginBottom: 4 }}>
-                    voice only ({onlyVoice.length})
-                  </div>
-                  {onlyVoice.map((t) => (
-                    <span className="pill" key={t}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            );
-          })()}
         </Cell>
         <Cell label="Guardrails checklist">
           <ul style={{ listStyle: "none", margin: 0, padding: 0, fontSize: "0.82rem" }}>
@@ -988,6 +943,21 @@ function App() {
               </li>
             ))}
           </ul>
+        </Cell>
+        <Cell label="First-use definitions">
+          {p.voice.jargonPolicy?.firstUseDefinitions &&
+          Object.keys(p.voice.jargonPolicy.firstUseDefinitions).length > 0 ? (
+            <dl className="kv">
+              {Object.entries(p.voice.jargonPolicy.firstUseDefinitions).map(([term, def]) => (
+                <div key={term} style={{ display: "contents" }}>
+                  <dt className="mono">{term}</dt>
+                  <dd>{def}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : (
+            <div className="small muted">None set.</div>
+          )}
         </Cell>
       </Row>
 
@@ -1119,7 +1089,7 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {p.toneMatrix.map((t) => (
+              {p.toneScenarios.map((t) => (
                 <tr key={t.context}>
                   <td className="mono" style={{ padding: "0.2rem 0.3rem" }}>
                     {t.context}
@@ -1138,7 +1108,7 @@ function App() {
         <Cell label="Context × channel heatmap" wide hint="Rows: context. Cols: channelBias. Cell tint = do vs. don't ratio.">
           {(() => {
             const allChannels = Array.from(
-              new Set(p.toneMatrix.flatMap((t) => t.channelBias ?? []))
+              new Set(p.toneScenarios.flatMap((t) => t.channelBias ?? []))
             );
             return (
               <table style={{ width: "100%", fontSize: "0.74rem", borderCollapse: "collapse" }}>
@@ -1153,7 +1123,7 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {p.toneMatrix.map((t) => (
+                  {p.toneScenarios.map((t) => (
                     <tr key={t.context}>
                       <th className="mono small" style={{ textAlign: "left", padding: "0.2rem 0.35rem", fontWeight: 500 }}>
                         {t.context}
@@ -1190,7 +1160,7 @@ function App() {
         </Cell>
         <Cell label="Scenario cards" wide>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.5rem" }}>
-            {p.toneMatrix.map((t) => (
+            {p.toneScenarios.map((t) => (
               <div key={t.context} style={{ border: "1px solid var(--rule)", borderRadius: 4, padding: "0.5rem 0.6rem" }}>
                 <div className="mono small" style={{ color: "var(--ink-soft)", marginBottom: 2 }}>
                   {t.context}
@@ -1211,7 +1181,7 @@ function App() {
         </Cell>
         <Cell label="Do/Don't bar-pair" wide hint="For each scenario: horizontal bars proportional to # of do vs. don't items.">
           <div>
-            {p.toneMatrix.map((t) => (
+            {p.toneScenarios.map((t) => (
               <div key={t.context} style={{ display: "grid", gridTemplateColumns: "6rem 1fr", gap: 8, padding: "0.25rem 0", alignItems: "center", fontSize: "0.78rem" }}>
                 <div className="mono small">{t.context}</div>
                 <div style={{ display: "flex", height: 16, borderRadius: 3, overflow: "hidden", border: "1px solid var(--rule)" }}>
@@ -1326,76 +1296,10 @@ function App() {
         </Cell>
       </Row>
 
-      <Row
-        kicker="messaging"
-        title="Terminology rules"
-        path="/profile/messaging/terminologyRules[]"
-        desc="Array of {preferredTerm, forbiddenTerms[], rationale}. About word choice."
-      >
-        <Cell label="Table">
-          <table style={{ width: "100%", fontSize: "0.8rem", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={{ textAlign: "left", padding: "0.2rem 0.3rem", borderBottom: "1px solid var(--rule)", fontWeight: 500 }}>
-                  Prefer
-                </th>
-                <th style={{ textAlign: "left", padding: "0.2rem 0.3rem", borderBottom: "1px solid var(--rule)", fontWeight: 500 }}>
-                  Avoid
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {p.messaging.terminologyRules.map((r) => (
-                <tr key={r.preferredTerm}>
-                  <td className="mono" style={{ padding: "0.2rem 0.3rem" }}>
-                    {r.preferredTerm}
-                  </td>
-                  <td className="mono" style={{ padding: "0.2rem 0.3rem", color: "var(--bad)", textDecoration: "line-through" }}>
-                    {r.forbiddenTerms?.join(", ") ?? "—"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Cell>
-        <Cell label="Replace arrows">
-          <div style={{ display: "grid", gap: "0.35rem" }}>
-            {p.messaging.terminologyRules.map((r) => (
-              <div key={r.preferredTerm} style={{ display: "grid", gridTemplateColumns: "1fr 20px 1fr", alignItems: "baseline", gap: 6, fontSize: "0.85rem" }}>
-                <span className="mono" style={{ color: "var(--bad)", textDecoration: "line-through" }}>
-                  {r.forbiddenTerms?.[0] ?? "—"}
-                </span>
-                <span className="muted" style={{ textAlign: "center" }}>→</span>
-                <span className="mono" style={{ color: "var(--good)", fontWeight: 600 }}>
-                  {r.preferredTerm}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Cell>
-        <Cell label="Split cards" wide>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.4rem" }}>
-            {p.messaging.terminologyRules.map((r) => (
-              <div key={r.preferredTerm} style={{ border: "1px solid var(--rule)", borderRadius: 4, overflow: "hidden", fontSize: "0.78rem" }}>
-                <div style={{ background: "#f0f7ef", padding: "0.35rem 0.5rem", borderBottom: "1px solid var(--rule-soft)" }}>
-                  <div className="small" style={{ color: "var(--good)" }}>prefer</div>
-                  <div className="mono" style={{ fontWeight: 600 }}>
-                    {r.preferredTerm}
-                  </div>
-                </div>
-                <div style={{ background: "#fff5f5", padding: "0.35rem 0.5rem" }}>
-                  <div className="small" style={{ color: "var(--bad)" }}>avoid</div>
-                  <div className="mono" style={{ textDecoration: "line-through" }}>
-                    {r.forbiddenTerms?.join(", ") ?? "—"}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Cell>
-      </Row>
-
       {/* ────────── COLOR SYSTEM ────────── */}
+      {/* terminologyRules section removed in v0.4: entries migrated to
+          lexicon, structureRules, or relationship.pronounPolicy. */}
+
 
       <Row
         kicker="visual"
@@ -1485,7 +1389,7 @@ function App() {
         kicker="visual"
         title="Typography system"
         path="/profile/visual/typographySystem[]"
-        desc="Array of {role, fontFamily, weight, usage}."
+        desc="Array of {role, fontFamily, usage}. v0.4: single family string, no fallback array, no weight."
       >
         <Cell label="Table">
           <table style={{ width: "100%", fontSize: "0.8rem", borderCollapse: "collapse" }}>
@@ -1493,8 +1397,8 @@ function App() {
               {p.visual.typographySystem.map((t) => (
                 <tr key={t.role}>
                   <td style={{ padding: "0.2rem 0.3rem", fontWeight: 500 }}>{t.role}</td>
-                  <td style={{ padding: "0.2rem 0.3rem" }}>{t.fontFamily?.join(", ")}</td>
-                  <td className="small muted" style={{ padding: "0.2rem 0.3rem" }}>{t.weight ?? "—"}</td>
+                  <td style={{ padding: "0.2rem 0.3rem" }}>{t.fontFamily}</td>
+                  <td className="small muted" style={{ padding: "0.2rem 0.3rem" }}>{t.usage}</td>
                 </tr>
               ))}
             </tbody>
@@ -1506,13 +1410,12 @@ function App() {
             return (
               <div key={t.role} style={{ padding: "0.35rem 0", borderBottom: "1px solid var(--rule-soft)" }}>
                 <div className="mono small muted">
-                  {t.role} · {t.fontFamily?.join(", ")}
+                  {t.role} · {t.fontFamily}
                 </div>
                 <div
                   style={{
-                    fontFamily: `${t.fontFamily?.[0] ?? "inherit"}, var(--f-ui)`,
+                    fontFamily: `${t.fontFamily}, var(--f-ui)`,
                     fontSize: size,
-                    fontWeight: weightOf(t.weight),
                     lineHeight: 1.2,
                   }}
                 >
@@ -1524,26 +1427,22 @@ function App() {
             );
           })}
         </Cell>
-        <Cell label="Scale waterfall">
-          <div>
-            {[2.4, 1.6, 1.15, 0.9, 0.78].map((size, i) => (
-              <div
-                key={i}
-                style={{
-                  fontFamily: `${p.visual.typographySystem[0]?.fontFamily?.[0] ?? "inherit"}, var(--f-ui)`,
-                  fontSize: `${size}rem`,
-                  fontWeight: 500,
-                  lineHeight: 1,
-                  padding: "0.1rem 0",
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: 8,
-                }}
-              >
-                <span style={{ minWidth: "2.8rem", fontSize: 10, fontFamily: "var(--f-mono)", color: "var(--ink-faint)" }}>
-                  {Math.round(size * 16)}px
-                </span>
-                <span>Aa</span>
+        <Cell label="Role-name specimen" hint="Font name rendered in its own family.">
+          <div style={{ display: "grid", gap: "0.4rem" }}>
+            {p.visual.typographySystem.map((t) => (
+              <div key={t.role}>
+                <div
+                  style={{
+                    fontFamily: `${t.fontFamily}, var(--f-ui)`,
+                    fontSize: "1.4rem",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {t.fontFamily}
+                </div>
+                <div className="small muted">
+                  {t.role} · {t.usage}
+                </div>
               </div>
             ))}
           </div>
@@ -1556,7 +1455,7 @@ function App() {
               <div>
                 <div
                   style={{
-                    fontFamily: `${headline?.fontFamily?.[0] ?? "inherit"}, var(--f-serif)`,
+                    fontFamily: `${headline?.fontFamily ?? "inherit"}, var(--f-serif)`,
                     fontSize: "1.4rem",
                     fontWeight: 500,
                     lineHeight: 1.1,
@@ -1567,7 +1466,7 @@ function App() {
                 </div>
                 <div
                   style={{
-                    fontFamily: `${body?.fontFamily?.[0] ?? "inherit"}, var(--f-ui)`,
+                    fontFamily: `${body?.fontFamily ?? "inherit"}, var(--f-ui)`,
                     fontSize: "0.88rem",
                     lineHeight: 1.5,
                     color: "var(--ink-soft)",
@@ -1602,7 +1501,7 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {p.examples.doDontPairs.map((d, i) => (
+              {p.illustrations.doDontPairs.map((d, i) => (
                 <tr key={i}>
                   <td style={{ padding: "0.25rem 0.3rem", verticalAlign: "top" }}>{d.do}</td>
                   <td style={{ padding: "0.25rem 0.3rem", color: "var(--ink-soft)", verticalAlign: "top" }}>{d.dont}</td>
@@ -1613,7 +1512,7 @@ function App() {
         </Cell>
         <Cell label="Split cards" wide>
           <div style={{ display: "grid", gap: "0.45rem" }}>
-            {p.examples.doDontPairs.slice(0, 4).map((d, i) => (
+            {p.illustrations.doDontPairs.slice(0, 4).map((d, i) => (
               <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, borderRadius: 4, overflow: "hidden", fontSize: "0.82rem" }}>
                 <div style={{ background: "#f0f7ef", padding: "0.5rem 0.65rem" }}>
                   <div className="small" style={{ color: "var(--good)", fontWeight: 600, marginBottom: 2 }}>
@@ -1633,7 +1532,7 @@ function App() {
         </Cell>
         <Cell label="Chat bubbles" wide>
           <div style={{ display: "grid", gap: "0.55rem" }}>
-            {p.examples.doDontPairs.slice(0, 3).map((d, i) => (
+            {p.illustrations.doDontPairs.slice(0, 3).map((d, i) => (
               <div key={i}>
                 <div
                   style={{
@@ -1657,8 +1556,7 @@ function App() {
                     borderRadius: "10px 10px 2px 10px",
                     padding: "0.4rem 0.6rem",
                     maxWidth: "85%",
-                    marginRight: 0,
-                    marginLeftAuto: 0,
+                    marginLeft: "auto",
                     fontSize: "0.82rem",
                     textDecoration: "line-through",
                     color: "#7d1c1c",
@@ -1889,7 +1787,7 @@ function App() {
       <Row
         kicker="audit"
         title="Audit dashboard"
-        path="/audit/{overallConfidence,completeness,openQuestions,warnings,missingFieldPaths}"
+        path="/audit/{overallConfidence,completeness,openQuestions,warnings}"
         desc="Document-level state. The one place where scanbarkeit really matters: can we ship this record?"
       >
         <Cell label="Key–value">
@@ -1960,7 +1858,7 @@ function App() {
                 {q}
               </div>
             ))}
-            {doc.audit.missingFieldPaths.slice(0, 5).map((pth) => (
+            {deriveMissingFieldPaths(doc).slice(0, 5).map((pth) => (
               <div key={pth} style={{ padding: "0.35rem 0.55rem", background: "var(--surface)", borderLeft: "2px solid var(--ink-faint)" }}>
                 <span className="mono small muted">missing</span>{" "}
                 <span className="mono">{pth}</span>
@@ -2021,15 +1919,6 @@ function contrast(a: string | undefined, b: string | undefined): number {
   const la = luminance(a);
   const lb = luminance(b);
   return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
-}
-
-function weightOf(w: string | null | undefined): number {
-  if (!w) return 400;
-  const l = w.toLowerCase();
-  if (l.includes("bold")) return 700;
-  if (l.includes("medium")) return 500;
-  if (l.includes("light")) return 300;
-  return 400;
 }
 
 const root = document.getElementById("root");

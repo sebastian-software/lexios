@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import brandYaml from "../../3degrees.brand-id.yaml?raw";
+import brandYaml from "../../example.brand-id.yaml?raw";
 import { parseBrandIdYaml } from "../../../src/brand-id.yaml.js";
 import { BrandReport } from "../../../src/react/index.js";
 

@@ -10,6 +10,7 @@ import {
   type CoreProfile,
   type EvidenceItem,
 } from "../brand-id.schema.js";
+import { deriveMissingFieldPaths } from "../brand-id.audit.js";
 
 export type BrandReportRenderableSectionKey = BrandProfileSectionKey | "evidence" | "audit";
 
@@ -50,11 +51,11 @@ export const DEFAULT_SECTION_ORDER: BrandProfileSectionKey[] = [
   "relationship",
   "voice",
   "lexicon",
-  "toneMatrix",
+  "toneScenarios",
   "messaging",
   "visual",
   "governance",
-  "examples",
+  "illustrations",
 ];
 
 export const SECTION_META: Record<BrandReportRenderableSectionKey, { title: string; eyebrow: string }> = {
@@ -63,11 +64,11 @@ export const SECTION_META: Record<BrandReportRenderableSectionKey, { title: stri
   relationship: { title: "Relationship", eyebrow: "Stance" },
   voice: { title: "Voice", eyebrow: "Expression" },
   lexicon: { title: "Lexicon", eyebrow: "Language" },
-  toneMatrix: { title: "Tone Matrix", eyebrow: "Situations" },
+  toneScenarios: { title: "Tone Scenarios", eyebrow: "Situations" },
   messaging: { title: "Messaging System", eyebrow: "Structure" },
   visual: { title: "Visual System", eyebrow: "Look" },
   governance: { title: "Governance", eyebrow: "Control" },
-  examples: { title: "Examples", eyebrow: "Proof" },
+  illustrations: { title: "Illustrations", eyebrow: "Proof" },
   evidence: { title: "Evidence", eyebrow: "Sources" },
   audit: { title: "Audit", eyebrow: "Confidence" },
 };
@@ -118,7 +119,7 @@ function sectionSummary(document: BrandIdDraft, key: BrandReportRenderableSectio
     case "relationship":
       return document.profile.relationship.stance ?? undefined;
     case "voice":
-      return sentenceList(document.profile.voice.constantTraits);
+      return document.profile.voice.claimsPolicy ?? undefined;
     case "messaging":
       return document.profile.messaging.messageHierarchy[0]?.label;
     case "visual":
@@ -306,14 +307,29 @@ export function CoreSection({ document, section }: BrandReportSectionProps) {
           ["Category context", core.categoryContext],
         ]}
       />
-      <figure className="lx-brand-report__trait-figure">
-        <figcaption>Personality traits</figcaption>
-        <TagList items={core.personalityTraits} />
-      </figure>
-      <figure className="lx-brand-report__trait-figure">
-        <figcaption>Anti-traits</figcaption>
-        <TagList items={core.antiTraits} />
-      </figure>
+      {core.traitSpectrum.length > 0 ? (
+        <table className="lx-brand-report__table">
+          <caption>Trait spectrum</caption>
+          <thead>
+            <tr>
+              <th scope="col">Positive pole</th>
+              <th scope="col">Negative pole</th>
+              <th scope="col">Weight</th>
+              <th scope="col">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {core.traitSpectrum.map((pair) => (
+              <tr key={`${pair.positivePole}-${pair.negativePole}`}>
+                <th scope="row">{pair.positivePole}</th>
+                <td>{pair.negativePole}</td>
+                <td>{pair.weight.toFixed(2)}</td>
+                <td>{pair.note ?? ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : null}
       <SectionAnnotation document={document} path="/profile/core" />
     </BrandReportSection>
   );
@@ -338,8 +354,8 @@ export function AudienceSection({ document, section }: BrandReportSectionProps) 
             <tr>
               <th scope="col">Segment</th>
               <th scope="col">Knowledge</th>
-              <th scope="col">Needs</th>
               <th scope="col">Markets</th>
+              <th scope="col">Needs</th>
             </tr>
           </thead>
           <tbody>
@@ -350,25 +366,28 @@ export function AudienceSection({ document, section }: BrandReportSectionProps) 
                   {segment.description ? <span>{segment.description}</span> : null}
                 </th>
                 <td>{formatValue(segment.knowledgeLevel)}</td>
-                <td>{segment.needs?.join(", ") ?? "Not specified"}</td>
                 <td>{segment.markets?.join(", ") ?? "Not specified"}</td>
+                <td>
+                  {segment.needsPriority.length > 0 ? (
+                    <ol className="lx-brand-report__priority-list" aria-label={`${segment.name} needs`}>
+                      {segment.needsPriority
+                        .slice()
+                        .sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999))
+                        .map((need) => (
+                          <li key={need.label}>
+                            <span>{need.label}</span>
+                            <small>{need.type}</small>
+                          </li>
+                        ))}
+                    </ol>
+                  ) : (
+                    "Not specified"
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-      ) : null}
-      {audience.userNeedsPriority.length > 0 ? (
-        <ol className="lx-brand-report__priority-list" aria-label="User needs priority">
-          {audience.userNeedsPriority
-            .slice()
-            .sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999))
-            .map((need) => (
-              <li key={need.label}>
-                <span>{need.label}</span>
-                <small>{need.type}</small>
-              </li>
-            ))}
-        </ol>
       ) : null}
       <SectionAnnotation document={document} path="/profile/audience" />
     </BrandReportSection>
@@ -402,22 +421,41 @@ export function RelationshipSection({ document, section }: BrandReportSectionPro
 export function VoiceSection({ document, section }: BrandReportSectionProps) {
   const voice = document.profile.voice;
 
+  const firstUseEntries = voice.jargonPolicy?.firstUseDefinitions
+    ? Object.entries(voice.jargonPolicy.firstUseDefinitions)
+    : [];
+
   return (
     <BrandReportSection section={section}>
-      <figure className="lx-brand-report__trait-figure">
-        <figcaption>Constant traits</figcaption>
-        <TagList items={voice.constantTraits} />
-      </figure>
-      <figure className="lx-brand-report__trait-figure">
-        <figcaption>Anti-traits</figcaption>
-        <TagList items={voice.antiTraits} />
-      </figure>
       <FieldList
         items={[
-          ["Jargon policy", voice.jargonPolicy],
+          ["Jargon default", voice.jargonPolicy?.default],
+          ["Jargon notes", voice.jargonPolicy?.notes],
+          ["Reading level (FK grade)", voice.plainLanguage?.readingLevel],
+          ["Max sentence length", voice.plainLanguage?.maxSentenceLength],
+          ["Plain-language notes", voice.plainLanguage?.notes],
           ["Claims policy", voice.claimsPolicy],
         ]}
       />
+      {firstUseEntries.length > 0 ? (
+        <table className="lx-brand-report__table">
+          <caption>First-use definitions</caption>
+          <thead>
+            <tr>
+              <th scope="col">Term</th>
+              <th scope="col">First-use definition</th>
+            </tr>
+          </thead>
+          <tbody>
+            {firstUseEntries.map(([term, definition]) => (
+              <tr key={term}>
+                <th scope="row">{term}</th>
+                <td>{definition}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : null}
       <TextList items={voice.personalityGuardrails} />
       <SectionAnnotation document={document} path="/profile/voice" />
     </BrandReportSection>
@@ -437,6 +475,7 @@ export function LexiconSection({ document, section }: BrandReportSectionProps) {
             <tr>
               <th scope="col">Term</th>
               <th scope="col">Definition</th>
+              <th scope="col">Contextual meaning</th>
               <th scope="col">Kind</th>
               <th scope="col">Usage</th>
             </tr>
@@ -446,6 +485,7 @@ export function LexiconSection({ document, section }: BrandReportSectionProps) {
               <tr key={entry.term}>
                 <th scope="row">{entry.canonicalSpelling ?? entry.term}</th>
                 <td>{entry.definition}</td>
+                <td>{entry.contextualMeaning ?? ""}</td>
                 <td>{entry.kind}</td>
                 <td>{entry.usage ?? entry.casingRule ?? "Not specified"}</td>
               </tr>
@@ -458,14 +498,14 @@ export function LexiconSection({ document, section }: BrandReportSectionProps) {
   );
 }
 
-export function ToneMatrixSection({ document, section }: BrandReportSectionProps) {
-  const toneMatrix = document.profile.toneMatrix;
+export function ToneScenariosSection({ document, section }: BrandReportSectionProps) {
+  const toneScenarios = document.profile.toneScenarios;
 
   return (
     <BrandReportSection section={section}>
-      {toneMatrix.length > 0 ? (
+      {toneScenarios.length > 0 ? (
         <table className="lx-brand-report__table">
-          <caption>Tone matrix</caption>
+          <caption>Tone scenarios</caption>
           <thead>
             <tr>
               <th scope="col">Context</th>
@@ -476,7 +516,7 @@ export function ToneMatrixSection({ document, section }: BrandReportSectionProps
             </tr>
           </thead>
           <tbody>
-            {toneMatrix.map((row) => (
+            {toneScenarios.map((row) => (
               <tr key={`${row.context}-${row.userState}`}>
                 <th scope="row">
                   {row.context}
@@ -518,27 +558,6 @@ export function MessagingSection({ document, section }: BrandReportSectionProps)
       </ol>
       <FieldList items={[["CTA style", messaging.ctaStyle]]} />
       <TextList items={messaging.structureRules} />
-      {messaging.terminologyRules.length > 0 ? (
-        <table className="lx-brand-report__table">
-          <caption>Terminology rules</caption>
-          <thead>
-            <tr>
-              <th scope="col">Preferred term</th>
-              <th scope="col">Avoid</th>
-              <th scope="col">Rationale</th>
-            </tr>
-          </thead>
-          <tbody>
-            {messaging.terminologyRules.map((rule) => (
-              <tr key={rule.preferredTerm}>
-                <th scope="row">{rule.preferredTerm}</th>
-                <td>{rule.forbiddenTerms?.join(", ") ?? "Not specified"}</td>
-                <td>{rule.rationale ?? rule.notes ?? "Not specified"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : null}
       <TextList items={messaging.evidenceAndClaimsRules} />
     </BrandReportSection>
   );
@@ -550,6 +569,29 @@ export function VisualSystemSection({ document, section }: BrandReportSectionPro
   return (
     <BrandReportSection section={section}>
       <TextList items={visual.logoRules} />
+      {visual.logoAssets.length > 0 ? (
+        <table className="lx-brand-report__table">
+          <caption>Logo assets</caption>
+          <thead>
+            <tr>
+              <th scope="col">Type</th>
+              <th scope="col">Path</th>
+              <th scope="col">Format</th>
+              <th scope="col">Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {visual.logoAssets.map((asset) => (
+              <tr key={asset.path}>
+                <th scope="row">{asset.type}</th>
+                <td><code>{asset.path}</code></td>
+                <td>{asset.format}</td>
+                <td>{asset.usage ?? "Not specified"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : null}
       {visual.colorSystem.length > 0 ? (
         <table className="lx-brand-report__table">
           <caption>Color system</caption>
@@ -585,8 +627,8 @@ export function VisualSystemSection({ document, section }: BrandReportSectionPro
             {visual.typographySystem.map((typeRule) => (
               <tr key={typeRule.role}>
                 <th scope="row">{typeRule.role}</th>
-                <td>{typeRule.fontFamily?.join(", ") ?? "Not specified"}</td>
-                <td>{typeRule.usage ?? typeRule.note ?? "Not specified"}</td>
+                <td>{typeRule.fontFamily}</td>
+                <td>{typeRule.usage}</td>
               </tr>
             ))}
           </tbody>
@@ -639,12 +681,12 @@ export function GovernanceSection({ document, section }: BrandReportSectionProps
   );
 }
 
-export function ExamplesSection({ document, section }: BrandReportSectionProps) {
-  const examples = document.profile.examples;
+export function IllustrationsSection({ document, section }: BrandReportSectionProps) {
+  const illustrations = document.profile.illustrations;
 
   return (
     <BrandReportSection section={section}>
-      {examples.doDontPairs.length > 0 ? (
+      {illustrations.doDontPairs.length > 0 ? (
         <table className="lx-brand-report__table">
           <caption>Do and do not pairs</caption>
           <thead>
@@ -655,7 +697,7 @@ export function ExamplesSection({ document, section }: BrandReportSectionProps) 
             </tr>
           </thead>
           <tbody>
-            {examples.doDontPairs.map((pair) => (
+            {illustrations.doDontPairs.map((pair) => (
               <tr key={`${pair.do}-${pair.dont}`}>
                 <td>{pair.do}</td>
                 <td>{pair.dont}</td>
@@ -665,7 +707,7 @@ export function ExamplesSection({ document, section }: BrandReportSectionProps) 
           </tbody>
         </table>
       ) : null}
-      {examples.channelExamples.length > 0 ? (
+      {illustrations.channelExamples.length > 0 ? (
         <table className="lx-brand-report__table">
           <caption>Channel examples</caption>
           <thead>
@@ -676,7 +718,7 @@ export function ExamplesSection({ document, section }: BrandReportSectionProps) 
             </tr>
           </thead>
           <tbody>
-            {examples.channelExamples.map((example) => (
+            {illustrations.channelExamples.map((example) => (
               <tr key={`${example.channel}-${example.example}`}>
                 <th scope="row">{example.channel}</th>
                 <td>{example.example}</td>
@@ -687,7 +729,7 @@ export function ExamplesSection({ document, section }: BrandReportSectionProps) 
         </table>
       ) : null}
       <ol className="lx-brand-report__scenario-list" aria-label="Scenario examples">
-        {examples.scenarioExamples.map((example) => (
+        {illustrations.scenarioExamples.map((example) => (
           <li key={example.scenario}>
             <h3>{example.scenario}</h3>
             <p>{example.summary}</p>
@@ -746,15 +788,18 @@ export function AuditSection({ document, section }: BrandReportSectionProps) {
       <TextList items={audit.openQuestions} />
       <TextList items={audit.assumptions} />
       <TextList items={audit.warnings} />
-      {audit.missingFieldPaths.length > 0 ? (
-        <ul className="lx-brand-report__path-list" aria-label="Missing field paths">
-          {audit.missingFieldPaths.map((path) => (
-            <li key={path}>
-              <code>{path}</code>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      {(() => {
+        const missing = deriveMissingFieldPaths(document);
+        return missing.length > 0 ? (
+          <ul className="lx-brand-report__path-list" aria-label="Missing field paths">
+            {missing.map((path) => (
+              <li key={path}>
+                <code>{path}</code>
+              </li>
+            ))}
+          </ul>
+        ) : null;
+      })()}
       {audit.discovery ? (
         <details className="lx-brand-report__details">
           <summary>Discovery</summary>
@@ -778,11 +823,11 @@ const SECTION_COMPONENTS: Record<BrandReportRenderableSectionKey, ComponentType<
   relationship: RelationshipSection,
   voice: VoiceSection,
   lexicon: LexiconSection,
-  toneMatrix: ToneMatrixSection,
+  toneScenarios: ToneScenariosSection,
   messaging: MessagingSection,
   visual: VisualSystemSection,
   governance: GovernanceSection,
-  examples: ExamplesSection,
+  illustrations: IllustrationsSection,
   evidence: EvidenceSection,
   audit: AuditSection,
 };

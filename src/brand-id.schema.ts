@@ -1,7 +1,11 @@
 import { z } from "zod";
 
-export const BrandIdSchemaVersionSchema = z.literal("0.3.0");
+// ─────────────────────────────────────────────────────────── schema version ──
+
+export const BrandIdSchemaVersionSchema = z.literal("0.4.0");
 export type BrandIdSchemaVersion = z.infer<typeof BrandIdSchemaVersionSchema>;
+
+// ───────────────────────────────────────────────────────────────── primitives ──
 
 export const ISODateStringSchema = z.string().min(1);
 export type ISODateString = z.infer<typeof ISODateStringSchema>;
@@ -11,6 +15,10 @@ export type UrlString = z.infer<typeof UrlStringSchema>;
 
 export const LocaleCodeSchema = z.string().min(1);
 export type LocaleCode = z.infer<typeof LocaleCodeSchema>;
+
+const NullableStringSchema = z.string().nullable();
+
+// ───────────────────────────────────────────────────────────── status enums ──
 
 export const DraftStatusSchema = z.enum([
   "seeded",
@@ -110,6 +118,8 @@ export const BrandChannelSchema = z.enum([
 ]);
 export type BrandChannel = z.infer<typeof BrandChannelSchema>;
 
+// ─────────────────────────────────────── relationship / tone / messaging enums ──
+
 export const RegisterLevelSchema = z.enum(["formal", "neutral", "informal", "adaptive"]);
 export type RegisterLevel = z.infer<typeof RegisterLevelSchema>;
 
@@ -179,6 +189,8 @@ export type MessagingObjective = z.infer<typeof MessagingObjectiveSchema>;
 export const KnowledgeLevelSchema = z.enum(["general", "aware", "practitioner", "expert", "mixed"]);
 export type KnowledgeLevel = z.infer<typeof KnowledgeLevelSchema>;
 
+// ────────────────────────────────────────────────────────────────── lexicon ──
+
 export const LexiconEntryKindSchema = z.enum([
   "brand",
   "product",
@@ -189,6 +201,7 @@ export const LexiconEntryKindSchema = z.enum([
   "legal",
   "industry",
   "people",
+  "domain_term",
   "other",
 ]);
 export type LexiconEntryKind = z.infer<typeof LexiconEntryKindSchema>;
@@ -202,7 +215,135 @@ export const LexiconTranslationPolicySchema = z.enum([
 ]);
 export type LexiconTranslationPolicy = z.infer<typeof LexiconTranslationPolicySchema>;
 
-const NullableStringSchema = z.string().nullable();
+// ───────────────────────────────────────────────────────────── trait spectrum ──
+
+// 90 canonical pole identifiers (each pole of each axis). Authors never type
+// these freely — only the 45 approved axis pairings below are valid.
+export const TraitIdSchema = z.enum([
+  // Register
+  "formal", "informal", "casual",
+  // Temperature & proximity
+  "warm", "cool", "intimate", "distant",
+  // Energy, playfulness
+  "energetic", "calm", "playful", "serious",
+  // Confidence, daring, modesty
+  "confident", "tentative", "daring", "cautious", "modest", "proud",
+  // Complexity, sophistication
+  "technical", "plain", "sophisticated", "simple",
+  // Authority posture
+  "authoritative", "collaborative", "expert", "peer", "directive", "suggestive",
+  // Emotional stance
+  "optimistic", "realistic", "enthusiastic", "measured",
+  // Credibility
+  "credible", "hypey", "authentic", "promotional", "grounded", "aspirational",
+  // Precision, rigor
+  "precise", "fluid", "rigorous", "loose",
+  // Aesthetic weight
+  "bold", "restrained", "loud", "quiet", "dramatic", "subtle",
+  // Orientation in time
+  "innovative", "traditional", "modern", "heritage", "forward-looking", "settled",
+  // Humor
+  "witty", "earnest", "dry", "sincere", "expressive", "reserved",
+  // Care posture
+  "nurturing", "clinical", "compassionate", "detached", "reassuring", "informational",
+  // Trust / finance posture
+  "transparent", "opaque", "prudent", "opportunistic", "disciplined", "spontaneous",
+  // Luxury / craft posture
+  "refined", "pragmatic", "exclusive", "accessible", "timeless", "trendy",
+  "crafted", "industrial",
+  // Entertainment posture
+  "thrilling", "steady", "immersive", "observational",
+  // Vision vs. grounding
+  "practical", "visionary", "curious", "resolved",
+  // Addressing
+  "inclusive", "selective",
+]);
+export type TraitId = z.infer<typeof TraitIdSchema>;
+
+// Canonical axis list: only these pole combinations are allowed.
+// Order (positive, negative) is the convention but either side of any pair
+// is accepted in authored content.
+export const TRAIT_AXES: ReadonlyArray<readonly [TraitId, TraitId]> = [
+  ["formal", "informal"],
+  ["formal", "casual"],
+  ["warm", "cool"],
+  ["intimate", "distant"],
+  ["energetic", "calm"],
+  ["playful", "serious"],
+  ["confident", "tentative"],
+  ["daring", "cautious"],
+  ["modest", "proud"],
+  ["technical", "plain"],
+  ["sophisticated", "simple"],
+  ["authoritative", "collaborative"],
+  ["expert", "peer"],
+  ["directive", "suggestive"],
+  ["optimistic", "realistic"],
+  ["enthusiastic", "measured"],
+  ["credible", "hypey"],
+  ["authentic", "promotional"],
+  ["grounded", "aspirational"],
+  ["precise", "fluid"],
+  ["rigorous", "loose"],
+  ["bold", "restrained"],
+  ["loud", "quiet"],
+  ["dramatic", "subtle"],
+  ["innovative", "traditional"],
+  ["modern", "heritage"],
+  ["forward-looking", "settled"],
+  ["witty", "earnest"],
+  ["dry", "sincere"],
+  ["expressive", "reserved"],
+  ["nurturing", "clinical"],
+  ["compassionate", "detached"],
+  ["reassuring", "informational"],
+  ["transparent", "opaque"],
+  ["prudent", "opportunistic"],
+  ["disciplined", "spontaneous"],
+  ["refined", "pragmatic"],
+  ["exclusive", "accessible"],
+  ["timeless", "trendy"],
+  ["crafted", "industrial"],
+  ["thrilling", "steady"],
+  ["immersive", "observational"],
+  ["practical", "visionary"],
+  ["curious", "resolved"],
+  ["inclusive", "selective"],
+] as const;
+
+function isCanonicalAxis(a: TraitId, b: TraitId): boolean {
+  return TRAIT_AXES.some(
+    ([p, n]) => (a === p && b === n) || (a === n && b === p),
+  );
+}
+
+export const IconRefSchema = z.object({
+  // v0.4 supports Lucide only. Expansion to additional sets is a later schema change.
+  set: z.literal("lucide"),
+  name: z.string().min(1),
+});
+export type IconRef = z.infer<typeof IconRefSchema>;
+
+export const TraitPairSchema = z
+  .object({
+    positivePole: TraitIdSchema,
+    negativePole: TraitIdSchema,
+    // −1 = fully at negative pole, 0 = neutral, +1 = fully at positive pole.
+    weight: z.number().min(-1).max(1),
+    icon: IconRefSchema.optional(),
+    // Brand-specific nuance the enum cannot express. Not a second axis system.
+    note: z.string().optional(),
+  })
+  .refine(
+    (p) => p.positivePole !== p.negativePole && isCanonicalAxis(p.positivePole, p.negativePole),
+    {
+      message:
+        "positivePole/negativePole must be distinct and form a canonical axis from TRAIT_AXES.",
+    },
+  );
+export type TraitPair = z.infer<typeof TraitPairSchema>;
+
+// ─────────────────────────────────────────────────────── confidence + annotations ──
 
 export const ConfidenceSchema = z.object({
   score: z.number().min(0).max(1),
@@ -235,6 +376,8 @@ export type FieldAnnotation = z.infer<typeof FieldAnnotationSchema>;
 export const BrandAnnotationsSchema = z.record(BrandFieldPathSchema, FieldAnnotationSchema);
 export type BrandAnnotations = z.infer<typeof BrandAnnotationsSchema>;
 
+// ─────────────────────────────────────────────────────────────────── meta ──
+
 export const SeedInputSchema = z.object({
   kind: EvidenceKindSchema,
   label: z.string().min(1),
@@ -261,6 +404,8 @@ export const BrandIdMetaSchema = z.object({
   tags: z.array(z.string()),
 });
 export type BrandIdMeta = z.infer<typeof BrandIdMetaSchema>;
+
+// ───────────────────────────────────────────────────────── discovery (unchanged) ──
 
 export const WebsiteDiscoverySchema = z.object({
   seedUrl: UrlStringSchema,
@@ -290,14 +435,7 @@ export const BrandDiscoverySchema = z.object({
 });
 export type BrandDiscovery = z.infer<typeof BrandDiscoverySchema>;
 
-export const AudienceSegmentSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().optional(),
-  knowledgeLevel: KnowledgeLevelSchema.optional(),
-  needs: z.array(z.string()).optional(),
-  markets: z.array(z.string()).optional(),
-});
-export type AudienceSegment = z.infer<typeof AudienceSegmentSchema>;
+// ─────────────────────────────────────────────────────────────── audience ──
 
 export const UserNeedSchema = z.object({
   label: z.string().min(1),
@@ -305,6 +443,27 @@ export const UserNeedSchema = z.object({
   priority: z.number().int().positive().optional(),
 });
 export type UserNeed = z.infer<typeof UserNeedSchema>;
+
+// v0.4: needsPriority replaces the weak `needs: string[]`. Prioritised, typed needs
+// live inside the segment they belong to — not at the root of the audience profile.
+export const AudienceSegmentSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  knowledgeLevel: KnowledgeLevelSchema.optional(),
+  markets: z.array(z.string()).optional(),
+  needsPriority: z.array(UserNeedSchema),
+});
+export type AudienceSegment = z.infer<typeof AudienceSegmentSchema>;
+
+export const AudienceProfileSchema = z.object({
+  primarySegments: z.array(AudienceSegmentSchema),
+  secondarySegments: z.array(AudienceSegmentSchema),
+  literacyOrDomainAssumptions: NullableStringSchema,
+  globalAudienceNotes: NullableStringSchema,
+});
+export type AudienceProfile = z.infer<typeof AudienceProfileSchema>;
+
+// ─────────────────────────────────────────────────────────── relationship ──
 
 export const AddressFormPolicySchema = z.object({
   linguisticForm: NullableStringSchema,
@@ -319,6 +478,20 @@ export const RegisterPolicySchema = z.object({
 });
 export type RegisterPolicy = z.infer<typeof RegisterPolicySchema>;
 
+export const RelationshipProfileSchema = z.object({
+  addressForm: AddressFormPolicySchema,
+  register: RegisterPolicySchema,
+  role: RelationshipRoleSchema.nullable(),
+  stance: NullableStringSchema,
+  authorityLevel: AuthorityLevelSchema.nullable(),
+  customerView: NullableStringSchema,
+  pronounPolicy: NullableStringSchema,
+  humorDistance: HumorDistanceSchema.nullable(),
+});
+export type RelationshipProfile = z.infer<typeof RelationshipProfileSchema>;
+
+// ───────────────────────────────────────────────────────────── tone scenarios ──
+
 export const ToneScenarioSchema = z.object({
   context: ToneContextSchema,
   userState: z.string().min(1),
@@ -329,6 +502,8 @@ export const ToneScenarioSchema = z.object({
 });
 export type ToneScenario = z.infer<typeof ToneScenarioSchema>;
 
+// ────────────────────────────────────────────────────────────── messaging ──
+
 export const MessageLayerSchema = z.object({
   label: z.string().min(1),
   priority: z.number(),
@@ -336,17 +511,77 @@ export const MessageLayerSchema = z.object({
 });
 export type MessageLayer = z.infer<typeof MessageLayerSchema>;
 
-export const TerminologyRuleSchema = z.object({
-  preferredTerm: z.string().min(1),
-  forbiddenTerms: z.array(z.string()).optional(),
-  rationale: z.string().optional(),
+// v0.4: terminologyRules removed. Single-term preferences migrate to lexicon;
+// cross-cutting style rules to structureRules; pronoun preferences to
+// relationship.pronounPolicy.
+export const MessagingProfileSchema = z.object({
+  primaryObjectives: z.array(MessagingObjectiveSchema),
+  messageHierarchy: z.array(MessageLayerSchema),
+  structureRules: z.array(z.string()),
+  ctaStyle: NullableStringSchema,
+  evidenceAndClaimsRules: z.array(z.string()),
+  localizationRules: z.array(z.string()).nullable(),
+});
+export type MessagingProfile = z.infer<typeof MessagingProfileSchema>;
+
+// ───────────────────────────────────────────────────────────────────── core ──
+
+// v0.4: personalityTraits + antiTraits replaced by traitSpectrum (controlled,
+// weighted, axis-validated).
+export const CoreProfileSchema = z.object({
+  brandSummary: NullableStringSchema,
+  missionOrPromise: NullableStringSchema,
+  brandSelfImage: NullableStringSchema,
+  categoryContext: NullableStringSchema,
+  traitSpectrum: z.array(TraitPairSchema),
+});
+export type CoreProfile = z.infer<typeof CoreProfileSchema>;
+
+// ──────────────────────────────────────────────────────────────────── voice ──
+
+export const JargonDefaultSchema = z.enum(["avoid", "contextual", "embrace"]);
+export type JargonDefault = z.infer<typeof JargonDefaultSchema>;
+
+export const JargonPolicySchema = z.object({
+  default: JargonDefaultSchema,
+  // Keys are lexicon entry terms; values are the preferred first-use definition.
+  firstUseDefinitions: z.record(z.string(), z.string()).optional(),
   notes: z.string().optional(),
 });
-export type TerminologyRule = z.infer<typeof TerminologyRuleSchema>;
+export type JargonPolicy = z.infer<typeof JargonPolicySchema>;
 
+export const PlainLanguagePolicySchema = z.object({
+  // Flesch-Kincaid grade level (US school grade). For non-English locales use
+  // a recognised language analogue (e.g. Flesch-Amstad for German) reported
+  // against the same numeric scale. Typical targets: 6–8 consumer copy,
+  // 9–12 professional/editorial, 13+ academic.
+  readingLevel: z.number().positive().optional(),
+  maxSentenceLength: z.number().int().positive().optional(),
+  notes: z.string().optional(),
+});
+export type PlainLanguagePolicy = z.infer<typeof PlainLanguagePolicySchema>;
+
+// v0.4: constantTraits + antiTraits removed. Voice is now strictly about *how
+// the brand writes*, not what adjectives it would use about itself (that is
+// core's job via traitSpectrum).
+export const VoiceProfileSchema = z.object({
+  jargonPolicy: JargonPolicySchema.nullable(),
+  plainLanguage: PlainLanguagePolicySchema.nullable(),
+  claimsPolicy: NullableStringSchema,
+  personalityGuardrails: z.array(z.string()),
+});
+export type VoiceProfile = z.infer<typeof VoiceProfileSchema>;
+
+// ────────────────────────────────────────────────────────────────── lexicon ──
+
+// v0.4: added contextualMeaning (what *this* brand means by a generic word),
+// translationNotes (per-locale translator guidance), and kind `domain_term`
+// for words the brand interprets but does not own.
 export const LexiconEntrySchema = z.object({
   term: z.string().min(1),
   definition: z.string().min(1),
+  contextualMeaning: z.string().optional(),
+  translationNotes: z.record(LocaleCodeSchema, z.string()).optional(),
   kind: LexiconEntryKindSchema,
   canonicalSpelling: z.string().optional(),
   aliases: z.array(z.string()).optional(),
@@ -359,6 +594,14 @@ export const LexiconEntrySchema = z.object({
 });
 export type LexiconEntry = z.infer<typeof LexiconEntrySchema>;
 
+export const LexiconProfileSchema = z.object({
+  entries: z.array(LexiconEntrySchema),
+  generalRules: z.array(z.string()),
+});
+export type LexiconProfile = z.infer<typeof LexiconProfileSchema>;
+
+// ─────────────────────────────────────────────────────────────────── visual ──
+
 export const ColorTokenSchema = z.object({
   name: z.string().min(1),
   value: z.string().optional(),
@@ -367,14 +610,55 @@ export const ColorTokenSchema = z.object({
 });
 export type ColorToken = z.infer<typeof ColorTokenSchema>;
 
+// v0.4: fontFamily is a single family string (no fallback array). Weight and
+// note removed; that's implementation detail, not brand knowledge. `usage` is
+// now required because a role without a use case is not a brand decision.
 export const TypographyRuleSchema = z.object({
   role: z.string().min(1),
-  fontFamily: z.array(z.string()).optional(),
-  weight: z.string().optional(),
-  usage: z.string().optional(),
-  note: z.string().optional(),
+  fontFamily: z.string().min(1),
+  usage: z.string().min(1),
 });
 export type TypographyRule = z.infer<typeof TypographyRuleSchema>;
+
+export const LogoAssetTypeSchema = z.enum([
+  "mark",       // standalone icon/mark (monogram, emblem)
+  "wordmark",   // text-only logotype
+  "full",       // mark + wordmark combined
+  "secondary",  // additional approved variant
+]);
+export type LogoAssetType = z.infer<typeof LogoAssetTypeSchema>;
+
+export const LogoAssetFormatSchema = z.enum(["svg", "png", "webp", "ai", "pdf"]);
+export type LogoAssetFormat = z.infer<typeof LogoAssetFormatSchema>;
+
+export const LogoAssetSchema = z.object({
+  type: LogoAssetTypeSchema,
+  // Repo-relative path from the YAML document (e.g. "assets/brand/<slug>/mark.svg").
+  // Absolute URLs are rejected so a Brand ID stays self-contained and offline-usable.
+  path: z
+    .string()
+    .min(1)
+    .refine((p) => !/^https?:\/\//i.test(p), {
+      message: "logoAssets.path must be repo-relative; absolute URLs are not allowed in v0.4.",
+    }),
+  format: LogoAssetFormatSchema,
+  usage: z.string().optional(),
+  minSize: z.number().optional(),
+});
+export type LogoAsset = z.infer<typeof LogoAssetSchema>;
+
+export const VisualProfileSchema = z.object({
+  logoRules: z.array(z.string()),
+  logoAssets: z.array(LogoAssetSchema),
+  colorSystem: z.array(ColorTokenSchema),
+  typographySystem: z.array(TypographyRuleSchema),
+  imageryOrSymbolRules: z.array(z.string()),
+  accessibilityRules: z.array(z.string()),
+  coBrandingRules: z.array(z.string()),
+});
+export type VisualProfile = z.infer<typeof VisualProfileSchema>;
+
+// ─────────────────────────────────────────────────────────────── governance ──
 
 export const GovernanceOwnerSchema = z.object({
   teamOrRole: z.string().min(1),
@@ -382,6 +666,19 @@ export const GovernanceOwnerSchema = z.object({
   responsibilities: z.array(z.string()).optional(),
 });
 export type GovernanceOwner = z.infer<typeof GovernanceOwnerSchema>;
+
+export const GovernanceProfileSchema = z.object({
+  appliesTo: z.array(BrandChannelSchema),
+  sourceOfTruth: z.array(z.string()),
+  precedenceRules: z.array(z.string()),
+  owners: z.array(GovernanceOwnerSchema),
+  approvalRules: z.array(z.string()).nullable(),
+  reviewCycle: NullableStringSchema,
+  exceptionsPolicy: NullableStringSchema,
+});
+export type GovernanceProfile = z.infer<typeof GovernanceProfileSchema>;
+
+// ──────────────────────────────────────────────────── illustrations (renamed) ──
 
 export const DoDontPairSchema = z.object({
   do: z.string().min(1),
@@ -405,102 +702,29 @@ export const ScenarioExampleSchema = z.object({
 });
 export type ScenarioExample = z.infer<typeof ScenarioExampleSchema>;
 
-export const CoreProfileSchema = z.object({
-  brandSummary: NullableStringSchema,
-  missionOrPromise: NullableStringSchema,
-  brandSelfImage: NullableStringSchema,
-  categoryContext: NullableStringSchema,
-  personalityTraits: z.array(z.string()),
-  antiTraits: z.array(z.string()),
-});
-export type CoreProfile = z.infer<typeof CoreProfileSchema>;
-
-export const AudienceProfileSchema = z.object({
-  primarySegments: z.array(AudienceSegmentSchema),
-  secondarySegments: z.array(AudienceSegmentSchema),
-  literacyOrDomainAssumptions: NullableStringSchema,
-  globalAudienceNotes: NullableStringSchema,
-  userNeedsPriority: z.array(UserNeedSchema),
-});
-export type AudienceProfile = z.infer<typeof AudienceProfileSchema>;
-
-export const RelationshipProfileSchema = z.object({
-  addressForm: AddressFormPolicySchema,
-  register: RegisterPolicySchema,
-  role: RelationshipRoleSchema.nullable(),
-  stance: NullableStringSchema,
-  authorityLevel: AuthorityLevelSchema.nullable(),
-  customerView: NullableStringSchema,
-  pronounPolicy: NullableStringSchema,
-  humorDistance: HumorDistanceSchema.nullable(),
-});
-export type RelationshipProfile = z.infer<typeof RelationshipProfileSchema>;
-
-export const VoiceProfileSchema = z.object({
-  constantTraits: z.array(z.string()),
-  antiTraits: z.array(z.string()),
-  jargonPolicy: NullableStringSchema,
-  claimsPolicy: NullableStringSchema,
-  personalityGuardrails: z.array(z.string()),
-});
-export type VoiceProfile = z.infer<typeof VoiceProfileSchema>;
-
-export const LexiconProfileSchema = z.object({
-  entries: z.array(LexiconEntrySchema),
-  generalRules: z.array(z.string()),
-});
-export type LexiconProfile = z.infer<typeof LexiconProfileSchema>;
-
-export const MessagingProfileSchema = z.object({
-  primaryObjectives: z.array(MessagingObjectiveSchema),
-  messageHierarchy: z.array(MessageLayerSchema),
-  structureRules: z.array(z.string()),
-  terminologyRules: z.array(TerminologyRuleSchema),
-  ctaStyle: NullableStringSchema,
-  evidenceAndClaimsRules: z.array(z.string()),
-  localizationRules: z.array(z.string()).nullable(),
-});
-export type MessagingProfile = z.infer<typeof MessagingProfileSchema>;
-
-export const VisualProfileSchema = z.object({
-  logoRules: z.array(z.string()),
-  colorSystem: z.array(ColorTokenSchema),
-  typographySystem: z.array(TypographyRuleSchema),
-  imageryOrSymbolRules: z.array(z.string()),
-  accessibilityRules: z.array(z.string()),
-  coBrandingRules: z.array(z.string()),
-});
-export type VisualProfile = z.infer<typeof VisualProfileSchema>;
-
-export const GovernanceProfileSchema = z.object({
-  appliesTo: z.array(BrandChannelSchema),
-  sourceOfTruth: z.array(z.string()),
-  precedenceRules: z.array(z.string()),
-  owners: z.array(GovernanceOwnerSchema),
-  approvalRules: z.array(z.string()).nullable(),
-  reviewCycle: NullableStringSchema,
-  exceptionsPolicy: NullableStringSchema,
-});
-export type GovernanceProfile = z.infer<typeof GovernanceProfileSchema>;
-
-export const ExamplesProfileSchema = z.object({
+// v0.4: renamed from "examples" to disambiguate from the examples/ directory.
+export const IllustrationsProfileSchema = z.object({
   doDontPairs: z.array(DoDontPairSchema),
   channelExamples: z.array(ChannelExampleSchema),
   scenarioExamples: z.array(ScenarioExampleSchema),
 });
-export type ExamplesProfile = z.infer<typeof ExamplesProfileSchema>;
+export type IllustrationsProfile = z.infer<typeof IllustrationsProfileSchema>;
 
+// ───────────────────────────────────────────────────────── profile assembly ──
+
+// v0.4: toneMatrix → toneScenarios (honest name: it's a list, not a matrix).
+// v0.4: examples → illustrations (disambiguates from the examples/ directory).
 export const BrandProfileSectionKeySchema = z.enum([
   "core",
   "audience",
   "relationship",
   "voice",
   "lexicon",
-  "toneMatrix",
+  "toneScenarios",
   "messaging",
   "visual",
   "governance",
-  "examples",
+  "illustrations",
 ]);
 export type BrandProfileSectionKey = z.infer<typeof BrandProfileSectionKeySchema>;
 
@@ -510,11 +734,11 @@ export const BrandProfileSectionsSchema = z.object({
   relationship: RelationshipProfileSchema,
   voice: VoiceProfileSchema,
   lexicon: LexiconProfileSchema,
-  toneMatrix: z.array(ToneScenarioSchema),
+  toneScenarios: z.array(ToneScenarioSchema),
   messaging: MessagingProfileSchema,
   visual: VisualProfileSchema,
   governance: GovernanceProfileSchema,
-  examples: ExamplesProfileSchema,
+  illustrations: IllustrationsProfileSchema,
 });
 export type BrandProfileSections = z.infer<typeof BrandProfileSectionsSchema>;
 
@@ -528,11 +752,14 @@ export const LocaleOverrideSchema = z.object({
 });
 export type LocaleOverride = z.infer<typeof LocaleOverrideSchema>;
 
+// v0.4: customSections removed. Every piece of a brand record must fit the
+// schema or be a proper RFC for the next version.
 export const BrandProfileSchema = BrandProfileSectionsSchema.extend({
   localeOverrides: z.array(LocaleOverrideSchema),
-  customSections: z.record(z.string(), z.unknown()),
 });
 export type BrandProfile = z.infer<typeof BrandProfileSchema>;
+
+// ───────────────────────────────────────────────────────────── evidence ──
 
 export const EvidenceItemSchema = z.object({
   id: z.string().min(1),
@@ -550,6 +777,11 @@ export const EvidenceItemSchema = z.object({
 });
 export type EvidenceItem = z.infer<typeof EvidenceItemSchema>;
 
+// ────────────────────────────────────────────────────────────────── audit ──
+
+// v0.4: missingFieldPaths removed. Consumers should call
+// deriveMissingFieldPaths(doc) from "./brand-id.audit.ts" instead — incompleteness
+// is derived from annotations and empty leaves, not hand-maintained.
 export const BrandAuditSchema = z.object({
   discovery: BrandDiscoverySchema.optional(),
   reviewStatus: ReviewStatusSchema,
@@ -557,12 +789,13 @@ export const BrandAuditSchema = z.object({
   completeness: z.number().min(0).max(1),
   openQuestions: z.array(z.string()),
   assumptions: z.array(z.string()),
-  missingFieldPaths: z.array(BrandFieldPathSchema),
   warnings: z.array(z.string()),
   generatedAt: ISODateStringSchema.optional(),
   lastHumanReviewAt: ISODateStringSchema.optional(),
 });
 export type BrandAudit = z.infer<typeof BrandAuditSchema>;
+
+// ──────────────────────────────────────────────────────────────── document ──
 
 export const BrandIdDocumentSchema = z.object({
   meta: BrandIdMetaSchema,

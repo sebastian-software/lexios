@@ -8,11 +8,11 @@ const PROFILE_SECTION_ORDER = [
   "relationship",
   "voice",
   "lexicon",
-  "toneMatrix",
+  "toneScenarios",
   "messaging",
   "visual",
   "governance",
-  "examples",
+  "illustrations",
 ] as const;
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -120,9 +120,6 @@ export function renderBrandIdMarkdown(input: BrandIdDraft): string {
     "",
     "## Profile.localeOverrides",
     ...renderField("localeOverrides", draft.profile.localeOverrides),
-    "",
-    "## Profile.customSections",
-    ...renderField("customSections", draft.profile.customSections),
     "",
     "## Evidence",
     ...renderField("evidence", draft.evidence),

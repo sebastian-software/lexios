@@ -27,6 +27,10 @@
       "types": "./dist/brand-id.markdown.d.ts",
       "import": "./dist/brand-id.markdown.js"
     },
+    "./audit": {
+      "types": "./dist/brand-id.audit.d.ts",
+      "import": "./dist/brand-id.audit.js"
+    },
     "./react": {
       "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js"

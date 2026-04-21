@@ -6,14 +6,14 @@ import { createElement } from "react";
 import { parseBrandIdYaml } from "../dist/brand-id.yaml.js";
 import { BrandReport } from "../dist/react/index.js";
 
-const yaml = readFileSync(new URL("../examples/3degrees.brand-id.yaml", import.meta.url), "utf8");
+const yaml = readFileSync(new URL("../examples/example.brand-id.yaml", import.meta.url), "utf8");
 const document = parseBrandIdYaml(yaml);
 
 const fullHtml = renderToStaticMarkup(createElement(BrandReport, { document }));
 assert.match(fullHtml, /<article[^>]*data-lexios-report="brand-id"/);
 assert.match(fullHtml, /Brand Core/);
-assert.match(fullHtml, /Tone Matrix/);
-assert.match(fullHtml, /Supplier REach/);
+assert.match(fullHtml, /Tone Scenarios/);
+assert.match(fullHtml, /Illustrations/);
 assert.match(fullHtml, /Evidence/);
 assert.match(fullHtml, /Audit/);
 

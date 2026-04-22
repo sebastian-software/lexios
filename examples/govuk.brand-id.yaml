@@ -1,0 +1,543 @@
+# GOV.UK — Brand ID record
+#
+# Source material: publicly licensed under the Open Government Licence v3.0.
+# This record reconstructs the brand from the published GOV.UK style guide,
+# content design guide, and Design System. See docs/brand-id/examples/govuk.notes.md
+# for the source-to-field mapping and the rationale behind each annotation.
+
+meta:
+  schema:
+    id: brand-id
+    version: 0.4.0
+  brandName: GOV.UK
+  brandSlug: govuk
+  legalEntityName: Government Digital Service (GDS), UK Government
+  canonicalDomain: gov.uk
+  status: draft
+  createdAt: "2026-04-22T00:00:00Z"
+  updatedAt: "2026-04-22T00:00:00Z"
+  primaryLocale: en-GB
+  supportedLocales:
+    - en-GB
+  seedInputs:
+    - kind: web_page
+      label: GOV.UK Style Guide overview
+      url: https://www.gov.uk/guidance/style-guide
+    - kind: web_page
+      label: Writing for GOV.UK
+      url: https://www.gov.uk/guidance/content-design/writing-for-gov-uk
+    - kind: web_page
+      label: GOV.UK Design System — Colour
+      url: https://design-system.service.gov.uk/styles/colour/
+    - kind: web_page
+      label: GOV.UK Design System — Type scale
+      url: https://design-system.service.gov.uk/styles/type-scale/
+  tags:
+    - government
+    - public-service
+    - plain-english
+    - ogl-v3
+
+profile:
+  core:
+    brandSummary: The single UK‑government website, making public services clearer and more usable for everyone who needs them.
+    missionOrPromise: Help users find the information and services they need from government, in the simplest way possible.
+    brandSelfImage: A neutral, trustworthy, plainspoken source of truth — not a voice with personality, but a voice that steps out of the way.
+    categoryContext: Public‑sector digital service design. Benchmarked globally as a reference model (USWDS, Canada.ca, Australia.gov.au, Singapore GovTech all cite it).
+    traitSpectrum:
+      - positivePole: plain
+        negativePole: technical
+        weight: 0.95
+        note: Plain English is mandatory on GOV.UK.
+      - positivePole: credible
+        negativePole: hypey
+        weight: 1.0
+        note: Government voice; promotional language would undermine legitimacy.
+      - positivePole: formal
+        negativePole: casual
+        weight: 0.3
+        note: Conversational but not chatty. "Serious but not pompous."
+      - positivePole: directive
+        negativePole: suggestive
+        weight: 0.6
+        note: Tells people what to do when that's the task (e.g. "You must…"); otherwise informational.
+      - positivePole: precise
+        negativePole: fluid
+        weight: 0.7
+      - positivePole: inclusive
+        negativePole: selective
+        weight: 0.9
+      - positivePole: reassuring
+        negativePole: informational
+        weight: -0.2
+        note: Leans informational; reassurance is earned through clarity, not tone.
+
+  audience:
+    primarySegments:
+      - name: Members of the UK public
+        description: Citizens and residents looking for information about services, benefits, taxes, and government processes.
+        knowledgeLevel: mixed
+        markets:
+          - United Kingdom
+        needsPriority:
+          - label: Complete a specific government task end‑to‑end
+            type: task
+            priority: 1
+          - label: Find trustworthy information fast
+            type: intent
+            priority: 2
+          - label: Avoid doing the wrong thing or missing a deadline
+            type: anxiety
+            priority: 3
+      - name: Specialists with professional need
+        description: Accountants, legal professionals, healthcare workers, business owners, and others who consult GOV.UK as part of their work.
+        knowledgeLevel: practitioner
+        markets:
+          - United Kingdom
+        needsPriority:
+          - label: Access technical guidance at the right level of detail
+            type: task
+            priority: 1
+          - label: Cite authoritative, current policy
+            type: intent
+            priority: 2
+    secondarySegments:
+      - name: Civil servants publishing content
+        description: Departmental content designers and policy teams who write for GOV.UK under the style guide's authority.
+        knowledgeLevel: expert
+        markets:
+          - United Kingdom
+        needsPriority:
+          - label: Know what's allowed and not allowed on GOV.UK
+            type: task
+            priority: 1
+    literacyOrDomainAssumptions: Content targets a reading age of 9. Even highly educated readers prefer plain language, per GDS research. Assume nothing about the user's prior familiarity with government processes.
+    globalAudienceNotes: GOV.UK is UK‑only but frequently linked by international users researching UK processes (visas, qualifications, exports). English‑language content should be comprehensible without UK‑specific cultural references unless the subject is inherently UK‑specific.
+
+  relationship:
+    addressForm:
+      linguisticForm: Second person "you"; first-person plural "we" for the UK government where relevant.
+      normalizedForm: formal_second_person
+      notes: "Address users as 'you' where possible. Refer to departments by name rather than 'we' when precision matters."
+    register:
+      defaultLevel: neutral
+      adaptationPolicy: "Conversational but not chatty. 'Serious but not pompous,' 'emotionless — adjectives can be subjective,' 'brisk but not terse.' Register adapts to context but never becomes casual."
+    role: guide
+    stance: Speak as the UK government's single source of public information; do not editorialise, do not promote, do not personalise.
+    authorityLevel: balanced
+    customerView: A person trying to get something done with limited time, variable literacy, and often some anxiety about getting it wrong.
+    pronounPolicy: Singular 'they' for gender‑neutral pronouns. Address users as 'you'. Government speaks as 'we' only when precision is not sacrificed.
+    humorDistance: absent
+
+  voice:
+    jargonPolicy:
+      default: contextual
+      firstUseDefinitions: {}
+      notes: "'Where you need to use technical terms, you can. They're not jargon. You just need to explain what they mean the first time you use them.' For general content, prefer plain words: 'buy' not 'purchase', 'help' not 'assist'."
+    plainLanguage:
+      readingLevel: 9
+      maxSentenceLength: 25
+      notes: "Target reading age 9. Check sentences longer than 25 words for clarity. Paragraphs no more than 5 sentences. Plain English is mandatory."
+    claimsPolicy: Do not make promotional or aspirational claims. State what the service does and what users need to do. Do not use adjectives that could be read as subjective.
+    personalityGuardrails:
+      - Use the active voice. Avoid passive constructions.
+      - Write conversationally — picture your audience and write as if you were talking to them one‑to‑one.
+      - Use short sentences and short paragraphs.
+      - Do not use formal or long words when easy or short ones will do.
+      - Make text gender neutral. Use 'them', 'their', 'they'.
+      - Do not use FAQs. Structure content for how users actually approach the task.
+      - Do not use questions as headings.
+      - Do not use bold instead of a subheading.
+      - Avoid ampersands in body copy.
+      - Avoid block capitals; they are 13–18% harder to read.
+      - Do not use 'please' unnecessarily.
+      - Do not repeat the summary in the opening paragraph.
+
+  lexicon:
+    entries:
+      - term: GOV.UK
+        definition: The UK government's single digital publishing platform and the brand of the service published on it.
+        kind: brand
+        canonicalSpelling: GOV.UK
+        forbiddenVariants:
+          - gov.uk
+          - Gov.uk
+          - GOV UK
+          - Gov.UK
+        casingRule: Always uppercase GOV, always uppercase UK, joined by a single dot. Never lowercase, never spaced.
+        translationPolicy: do_not_translate
+      - term: government
+        definition: The UK government as the publishing entity behind GOV.UK.
+        contextualMeaning: In GOV.UK copy, lowercase 'government' refers to UK central government by default. Capitalise only when part of a proper name (e.g. 'Her Majesty's Government' in historical material).
+        kind: domain_term
+        casingRule: Lowercase 'government' in body copy.
+      - term: Plain English
+        definition: Writing style that uses common vocabulary, short sentences, active voice, and avoids jargon.
+        kind: method
+        canonicalSpelling: Plain English
+        usage: Plain English is mandatory for GOV.UK content.
+        translationPolicy: locale_specific
+      - term: content designer
+        definition: The job title for the editorial role responsible for drafting and maintaining GOV.UK pages.
+        kind: people
+        casingRule: Lowercase in body copy.
+      - term: service
+        definition: A transactional journey on GOV.UK through which users complete a specific task (e.g. renew a passport).
+        contextualMeaning: On GOV.UK, 'service' means a transactional end‑to‑end journey, not any informational content. Important for translators — 'Dienst' in German or 'service' in French both work, but the specific meaning matters.
+        kind: domain_term
+        translationPolicy: transcreate
+    generalRules:
+      - Spell department and organisation names using the exact form published on GOV.UK.
+      - Use everyday words where possible; technical terms are allowed when required, with a first-use definition.
+
+  toneScenarios:
+    - context: onboarding
+      userState: First time completing a particular government task.
+      toneShift: Patient, step‑by‑step, assume no prior knowledge.
+      do:
+        - Explain what the task is before explaining how to do it.
+        - State what the user will need before they start.
+        - Use one idea per sentence.
+      dont:
+        - Assume familiarity with government terminology.
+        - Bury eligibility or prerequisites at the bottom of the page.
+      channelBias:
+        - website
+    - context: error
+      userState: Something went wrong in a form or transaction.
+      toneShift: Direct, actionable, blameless.
+      do:
+        - Say what went wrong in plain words.
+        - Tell the user exactly what to do next.
+      dont:
+        - Apologise excessively.
+        - Use technical error codes without a plain explanation.
+      channelBias:
+        - website
+        - product_ui
+    - context: legal
+      userState: Reading official rules, eligibility criteria, or statutory notices.
+      toneShift: Precise, unambiguous, still in plain words where possible.
+      do:
+        - Use defined terms consistently.
+        - Link to the underlying regulation or statute.
+      dont:
+        - Paraphrase law to the point of losing precision.
+        - Smuggle editorial opinion into legal copy.
+      channelBias:
+        - website
+        - print
+    - context: crisis
+      userState: Emergency information (weather, public health, travel, civil contingencies).
+      toneShift: Calm, authoritative, immediate-action-first.
+      do:
+        - Lead with what the user should do right now.
+        - Link to the emergency service or action page.
+      dont:
+        - Speculate beyond confirmed facts.
+        - Use alarming language that adds no information.
+      channelBias:
+        - website
+        - social
+        - press
+
+  messaging:
+    primaryObjectives:
+      - educate
+      - guide
+      - build_trust
+      - comply
+    messageHierarchy:
+      - label: GOV.UK is the single place to find UK government services and information.
+        priority: 1
+      - label: Services on GOV.UK are designed to be used, end to end, by anyone.
+        priority: 2
+      - label: Plain English and a 9‑year‑old reading age are not simplifications — they are the standard.
+        priority: 3
+    structureRules:
+      - Use the active voice.
+      - Use short sentences; check anything over 25 words.
+      - Keep paragraphs to 5 sentences or fewer.
+      - Start with the user's task, not the department's structure.
+      - Use subheadings to split up content, not bold text.
+    ctaStyle: Imperative verb plus object ("Renew your passport", "Check if you can vote"). No marketing flourish, no "Click here".
+    evidenceAndClaimsRules:
+      - Link to the primary policy, regulation, or dataset rather than paraphrasing without citation.
+      - Do not add adjectives that could be read as opinion.
+    localizationRules: null
+
+  visual:
+    logoRules:
+      - The GOV.UK crown and wordmark are the only approved brand lockup.
+      - Do not alter proportions, spacing, or colours of the wordmark.
+      - The crown mark has its own clear‑space and minimum‑size rules per the Design System.
+    logoAssets: []
+    colorSystem:
+      - name: Text
+        value: "#0b0c0c"
+        usage: Primary text colour on light backgrounds.
+      - name: Secondary text
+        value: "#484949"
+        usage: Secondary text, meta information.
+      - name: Brand
+        value: "#1d70b8"
+        usage: Primary brand blue; links, brand accents.
+      - name: Link
+        value: "#1a65a6"
+        usage: Default hyperlink colour.
+      - name: Link (visited)
+        value: "#54319f"
+        usage: Visited hyperlinks.
+      - name: Focus
+        value: "#ffdd00"
+        usage: Focus state indicator only. Never used for anything else.
+      - name: Error
+        value: "#ca3535"
+        usage: Error state text and borders.
+      - name: Success
+        value: "#0f7a52"
+        usage: Success state text and indicators.
+      - name: Border
+        value: "#cecece"
+        usage: Default component borders.
+      - name: Body background
+        value: "#ffffff"
+        usage: Page background.
+      - name: Template background
+        value: "#f4f8fb"
+        usage: Large surface and template backgrounds.
+    typographySystem:
+      - role: Body
+        fontFamily: GDS Transport
+        usage: All body text on GOV.UK. Variable-responsive sizing per the Design System type scale.
+      - role: Heading
+        fontFamily: GDS Transport
+        usage: All headings. Same family as body — GOV.UK uses a single type family to reduce cognitive load.
+    imageryOrSymbolRules:
+      - Use imagery only when it adds information. Decorative stock photography is discouraged.
+      - Icons must be purposeful and accompanied by text labels.
+    accessibilityRules:
+      - All content and interactive elements must meet WCAG 2.2 level AA for contrast (1.4.3 minimum).
+      - Use proper heading hierarchy — never use bold text as a subheading substitute.
+      - Avoid block capitals in body text.
+      - Never rely on colour alone to convey information. Use `#ffdd00` only for focus state.
+    coBrandingRules:
+      - Departmental sub‑brands (HMRC, DVLA, NHS, etc.) have their own identities off GOV.UK but appear as bylines on GOV.UK pages.
+      - Third‑party logos do not appear on GOV.UK content pages.
+
+  governance:
+    appliesTo:
+      - website
+      - product_ui
+      - docs
+      - email
+      - print
+    sourceOfTruth:
+      - https://www.gov.uk/guidance/style-guide
+      - https://www.gov.uk/guidance/content-design/writing-for-gov-uk
+      - https://design-system.service.gov.uk/
+    precedenceRules:
+      - Style guide takes precedence over departmental preferences for content on GOV.UK.
+      - Plain English requirement is non‑negotiable.
+    owners:
+      - teamOrRole: Government Digital Service (GDS)
+        contact: https://www.gov.uk/government/organisations/government-digital-service
+        responsibilities:
+          - Maintaining the style guide and Design System
+          - Approving exceptions
+          - Coordinating with departmental content teams
+    approvalRules:
+      - Changes to the style guide require GDS approval and public change logs.
+    reviewCycle: Continuous; style guide is versioned and updated as evidence and practice evolve.
+    exceptionsPolicy: Departmental exceptions (e.g. statutory language, specialist terminology) are allowed but must be documented and justified.
+
+  illustrations:
+    doDontPairs:
+      - do: Renew your passport
+        dont: Click here to start the passport renewal process
+        rationale: Imperative verb + object; the CTA names the outcome.
+      - do: You must tell us within 28 days.
+        dont: It is recommended that notification is provided within a 28-day window.
+        rationale: Active voice, plain words, direct instruction.
+      - do: help
+        dont: assistance
+        rationale: Use everyday words where possible.
+      - do: buy
+        dont: purchase
+        rationale: Use everyday words where possible.
+      - do: use
+        dont: utilise
+        rationale: Use everyday words where possible.
+    channelExamples:
+      - channel: website
+        example: "Check if you can vote in the UK"
+        rationale: Page title uses imperative phrasing for a user task; named outcome, no jargon.
+      - channel: email
+        example: "Your passport renewal: action required"
+        rationale: Subject line states the subject and the required action — no marketing phrasing.
+    scenarioExamples:
+      - scenario: User searches for "pension age"
+        summary: Users often look up a single fact before starting a longer journey.
+        example: "Check your State Pension age — Use this service to find out when you'll reach State Pension age and your Pension Credit qualifying age."
+        rationale: Answers the question in the page title; explains the service in one sentence; no marketing copy.
+      - scenario: User is mid‑form and hits a validation error
+        summary: Errors must be recoverable in one read.
+        example: "Enter your National Insurance number. It's 2 letters, 6 numbers and a final letter, like QQ 12 34 56 C."
+        rationale: States what's wrong, states the format required, gives an example.
+
+  localeOverrides: []
+
+evidence:
+  - id: D1
+    kind: web_page
+    title: GOV.UK Style Guide
+    url: https://www.gov.uk/guidance/style-guide
+    officiality: official
+    access: public_html
+    publisher: Government Digital Service
+    language: en-GB
+    summary: Overview page linking the A–Z style guide and technical content guidance. States GDS ownership.
+    capturedAt: "2026-04-22"
+    tags:
+      - style-guide
+  - id: D2
+    kind: web_page
+    title: Writing for GOV.UK
+    url: https://www.gov.uk/guidance/content-design/writing-for-gov-uk
+    officiality: official
+    access: public_html
+    publisher: Government Digital Service
+    language: en-GB
+    summary: Editorial guidance including the 9‑year‑old reading age target, plain English rules, active voice, paragraph and sentence limits, and accessibility rules.
+    capturedAt: "2026-04-22"
+    tags:
+      - writing
+      - plain-english
+  - id: D3
+    kind: web_page
+    title: GOV.UK Design System — Colour
+    url: https://design-system.service.gov.uk/styles/colour/
+    officiality: official
+    access: public_html
+    publisher: Government Digital Service
+    language: en-GB
+    summary: Full functional colour palette with hex values and WCAG 2.2 AA requirement.
+    capturedAt: "2026-04-22"
+    tags:
+      - visual
+      - colour
+  - id: D4
+    kind: web_page
+    title: GOV.UK Design System — Type scale
+    url: https://design-system.service.gov.uk/styles/type-scale/
+    officiality: official
+    access: public_html
+    publisher: Government Digital Service
+    language: en-GB
+    summary: Typography specifications; references the "New Transport font family" (GDS Transport).
+    capturedAt: "2026-04-22"
+    tags:
+      - visual
+      - typography
+
+annotations:
+  /profile/core:
+    status: confirmed
+    confidence:
+      score: 0.85
+      label: high
+      rationale: Sourced from two canonical GDS editorial pages. Trait weights are interpretations but the traits themselves are directly documented.
+    basis: synthesized
+    sources:
+      - evidenceId: D1
+      - evidenceId: D2
+  /profile/audience:
+    status: inferred
+    confidence:
+      score: 0.55
+      label: medium
+      rationale: GOV.UK's audience model is widely discussed but the published style guide does not itself list audience segments. Reconstructed from GDS research publications and content design guidance.
+    basis: derived
+    sources:
+      - evidenceId: D2
+    notes: The segment structure is a reasonable reconstruction; a reviewer from GDS would refine this.
+  /profile/relationship:
+    status: confirmed
+    confidence:
+      score: 0.8
+      label: high
+    basis: synthesized
+    sources:
+      - evidenceId: D2
+  /profile/voice:
+    status: confirmed
+    confidence:
+      score: 0.95
+      label: high
+      rationale: Every rule quoted is directly from "Writing for GOV.UK".
+    basis: quoted
+    sources:
+      - evidenceId: D2
+  /profile/lexicon:
+    status: mixed
+    confidence:
+      score: 0.6
+      label: medium
+      rationale: GOV.UK casing rule and plain-word replacements are canonical; the contextual-meaning entries for "government" and "service" are editorial interpretation.
+    basis: synthesized
+    sources:
+      - evidenceId: D1
+      - evidenceId: D2
+  /profile/toneScenarios:
+    status: inferred
+    confidence:
+      score: 0.5
+      label: medium
+      rationale: The style guide does not publish a formal tone matrix. Scenarios are reconstructed from observable GOV.UK patterns and cross-referenced guidance.
+    basis: derived
+    sources:
+      - evidenceId: D2
+    notes: Needs review by a GOV.UK content designer.
+  /profile/visual/colorSystem:
+    status: confirmed
+    confidence:
+      score: 1.0
+      label: high
+    basis: quoted
+    sources:
+      - evidenceId: D3
+  /profile/visual/typographySystem:
+    status: needs_review
+    confidence:
+      score: 0.55
+      label: medium
+      rationale: The Design System references "GDS Transport" but does not publish the full role-to-family mapping openly. Simplified to a single-family entry per v0.4 typography shape.
+    basis: paraphrased
+    sources:
+      - evidenceId: D4
+  /profile/governance:
+    status: confirmed
+    confidence:
+      score: 0.9
+      label: high
+    basis: quoted
+    sources:
+      - evidenceId: D1
+
+audit:
+  reviewStatus: needs_review
+  overallConfidence:
+    score: 0.75
+    label: high
+    rationale: Editorial content (voice, rules, lexicon) is directly sourced; audience and tone-scenario sections are informed reconstructions.
+  completeness: 0.7
+  openQuestions:
+    - Does GOV.UK publish an internal tone matrix beyond the public style guide?
+    - What is the canonical audience segmentation GDS uses for service design (relative to the reconstructed segments above)?
+    - Are the trait-spectrum weights correct in GDS's own self-assessment?
+  assumptions:
+    - This record reconstructs the brand from public material only. Internal GDS documentation may differ.
+    - Logo assets (crown + wordmark) are referenced by rule but not included — crown/arms are crown copyright, separate from the OGL-licensed style content.
+  warnings:
+    - Crown artwork is not OGL-licensed; any rendered output must resolve logoAssets from sources the consumer is permitted to use.
+  generatedAt: "2026-04-22T00:00:00Z"

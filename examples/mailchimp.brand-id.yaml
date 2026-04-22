@@ -1,0 +1,571 @@
+# Mailchimp — Brand ID record
+#
+# Source material: Mailchimp Content Style Guide (styleguide.mailchimp.com),
+# licensed under Creative Commons Attribution-NonCommercial 4.0 International.
+# The style guide is content-focused; visual brand identity is documented
+# separately at Mailchimp's marketing site and not part of the styleguide.mailchimp.com
+# scope, so the visual section here is deliberately minimal and reconstructive.
+#
+# See docs/brand-id/examples/mailchimp.notes.md for source-to-field mapping.
+
+meta:
+  schema:
+    id: brand-id
+    version: 0.4.0
+  brandName: Mailchimp
+  brandSlug: mailchimp
+  legalEntityName: The Rocket Science Group, LLC d/b/a Mailchimp (Intuit)
+  canonicalDomain: mailchimp.com
+  status: draft
+  createdAt: "2026-04-22T00:00:00Z"
+  updatedAt: "2026-04-22T00:00:00Z"
+  primaryLocale: en-US
+  supportedLocales:
+    - en-US
+  seedInputs:
+    - kind: web_page
+      label: Mailchimp Content Style Guide — Voice and Tone
+      url: https://styleguide.mailchimp.com/voice-and-tone/
+    - kind: web_page
+      label: Mailchimp Content Style Guide — Grammar and Mechanics
+      url: https://styleguide.mailchimp.com/grammar-and-mechanics/
+    - kind: web_page
+      label: Mailchimp Content Style Guide — Writing About People
+      url: https://styleguide.mailchimp.com/writing-about-people/
+    - kind: web_page
+      label: Mailchimp Content Style Guide — Writing About Mailchimp
+      url: https://styleguide.mailchimp.com/writing-about-mailchimp/
+  tags:
+    - marketing-automation
+    - saas
+    - content-style-guide
+    - cc-by-nc-4
+
+profile:
+  core:
+    brandSummary: A marketing and CRM platform built around email, speaking to small businesses as an experienced and compassionate partner.
+    missionOrPromise: Be the kind of business partner a small business owner would recommend to a friend — plainspoken, warm, competent, never condescending.
+    brandSelfImage: An experienced and compassionate business partner. Translators of complex concepts. Plainspoken with dry, subtle humour.
+    categoryContext: Email marketing automation and small-business CRM. Famous for setting the tone-of-voice benchmark that other SaaS content guides cite.
+    traitSpectrum:
+      - positivePole: plain
+        negativePole: technical
+        weight: 0.9
+        note: "Plainspoken, clarity-focused; jargon is explicitly avoided."
+      - positivePole: warm
+        negativePole: cool
+        weight: 0.85
+        note: "Genuine and warm — the compassionate partner posture."
+      - positivePole: authentic
+        negativePole: promotional
+        weight: 0.75
+      - positivePole: credible
+        negativePole: hypey
+        weight: 0.7
+        note: "'Weird but not inappropriate, smart but not snobbish.'"
+      - positivePole: dry
+        negativePole: sincere
+        weight: 0.6
+        note: "Straight-faced, subtle, 'a touch eccentric.' Humour is earned, not forced."
+      - positivePole: witty
+        negativePole: earnest
+        weight: 0.4
+        note: "Wry over farcical."
+      - positivePole: inclusive
+        negativePole: selective
+        weight: 0.95
+      - positivePole: formal
+        negativePole: casual
+        weight: -0.4
+        note: "Leans casual: contractions are encouraged for an informal, friendly tone."
+      - positivePole: expert
+        negativePole: peer
+        weight: -0.3
+        note: "'Translator' posture — knowledgeable but not above the reader."
+
+  audience:
+    primarySegments:
+      - name: Small business owners
+        description: Operators running customer-facing businesses (retail, services, creative, ecommerce) who use Mailchimp to reach their customers.
+        knowledgeLevel: general
+        markets:
+          - global
+        needsPriority:
+          - label: Get a marketing message out without learning a marketing system
+            type: task
+            priority: 1
+          - label: Trust that the platform won't embarrass them in front of customers
+            type: anxiety
+            priority: 2
+          - label: Understand what a feature does before deciding to use it
+            type: intent
+            priority: 3
+      - name: Freelance creators and independent professionals
+        description: Solo operators using Mailchimp for newsletters, client communications, and personal brands.
+        knowledgeLevel: mixed
+        markets:
+          - global
+        needsPriority:
+          - label: Send polished communications with minimal setup
+            type: task
+            priority: 1
+          - label: Feel like the tool respects their time
+            type: intent
+            priority: 2
+    secondarySegments:
+      - name: In-house marketers at mid-sized companies
+        description: Marketing ops and campaign managers using Mailchimp at scale.
+        knowledgeLevel: practitioner
+        markets:
+          - global
+        needsPriority:
+          - label: Automate multi-step campaigns without deep technical setup
+            type: task
+            priority: 1
+    literacyOrDomainAssumptions: Readers are often not marketing professionals. Avoid industry jargon ('CTR', 'segmentation', 'deliverability') without plain-language translation.
+    globalAudienceNotes: The content style guide is English-only but the product ships in multiple locales; the style guide's Writing for Translation section acknowledges translator needs.
+
+  relationship:
+    addressForm:
+      linguisticForm: Second person "you" for customers; first-person plural "we" for Mailchimp.
+      normalizedForm: formal_second_person
+      notes: "Address the reader as 'you'. Refer to Mailchimp as 'we', not 'it'."
+    register:
+      defaultLevel: informal
+      adaptationPolicy: "Tone shifts with the reader's emotional state while voice stays constant. 'Consider the reader's state of mind.' Relieved after finishing a campaign? Confused and asking for help? The voice is the same; the tone adapts."
+    role: expert_partner
+    stance: We're the competent friend who built the tool, not the vendor pitching it.
+    authorityLevel: balanced
+    customerView: A capable person doing marketing on top of another job. Short on time, potentially anxious about sending to real customers, allergic to being condescended to.
+    pronounPolicy: "Refer to Mailchimp as 'we', not 'it'. Use singular 'they' for gender-neutral references. Always capitalize the first M; never capitalize the c."
+    humorDistance: subtle
+
+  voice:
+    jargonPolicy:
+      default: avoid
+      notes: "Write in plain English. Avoid jargon and buzzwords. Translate complex concepts — we are 'translators' for readers who aren't marketing specialists."
+    plainLanguage:
+      notes: "Plainspoken and clarity-focused. The style guide does not specify a numeric reading-level target; clarity is evaluated qualitatively against the 'experienced and compassionate partner' posture."
+    claimsPolicy: Use positive language rather than negative ("can do X" rather than "can't do Y"). Be honest about limits; do not patronise, confuse, or use cheap emotional appeals.
+    personalityGuardrails:
+      - Use the active voice. Avoid the passive voice.
+      - Use positive language rather than negative language.
+      - Be funny when it's appropriate — never force it.
+      - Avoid "fluffy metaphors" and cheap emotional appeals.
+      - Never patronise, confuse, or exclude the reader.
+      - Say what we mean; say it plainly.
+      - Don't call groups of people "guys". Don't call women "girls".
+      - Use gender-neutral job titles ("server" not "waitress", "businessperson" not "businessman").
+      - Ask whether a person prefers identity-first or person-first language when writing about disability.
+      - Don't use disability idioms ("lame", "falling on deaf ears").
+      - Don't reference age unless it's relevant.
+      - Capitalise cultural/ethnic names that designate a shared identity (e.g. "Black"); keep "white" lowercase.
+      - Don't use Freddie (the mascot icon) in voice — never write in his voice.
+
+  lexicon:
+    entries:
+      - term: Mailchimp
+        definition: The Mailchimp brand and product.
+        kind: brand
+        canonicalSpelling: Mailchimp
+        forbiddenVariants:
+          - MailChimp
+          - mailchimp
+          - Mail Chimp
+          - Mailchimps
+        casingRule: Always capitalize the first M; always lowercase the c. Never plural.
+        translationPolicy: do_not_translate
+      - term: chimp
+        definition: Mailchimp's metaphor origin (now less literal as the product has expanded).
+        contextualMeaning: Never use the word 'chimp' alone in Mailchimp copy — unless you're talking about real chimpanzees. The metaphor is part of the origin story, not the working vocabulary.
+        kind: domain_term
+        forbiddenVariants:
+          - chimptastic
+          - monkey
+          - banana
+          - ape
+      - term: Freddie
+        definition: Mailchimp's mascot (a winking chimpanzee icon).
+        kind: brand
+        canonicalSpelling: Freddie
+        usage: "We do not personify Freddie. We do not write in his voice. We do not create content from his perspective."
+      - term: email
+        definition: Written electronic messages.
+        kind: domain_term
+        canonicalSpelling: email
+        forbiddenVariants:
+          - e-mail
+          - E-mail
+          - Email
+        casingRule: Lowercase unless starting a sentence.
+      - term: website
+        definition: A collection of web pages.
+        kind: domain_term
+        canonicalSpelling: website
+        forbiddenVariants:
+          - Website
+          - web site
+          - Web site
+        casingRule: Always lowercase.
+      - term: internet
+        definition: The global network.
+        kind: domain_term
+        canonicalSpelling: internet
+        forbiddenVariants:
+          - Internet
+        casingRule: Always lowercase.
+      - term: online
+        definition: Connected to the internet.
+        kind: domain_term
+        canonicalSpelling: online
+        casingRule: Always lowercase.
+    generalRules:
+      - Use Mailchimp-specific capitalisation rules even in quoted headings.
+      - Follow inclusive language rules consistently; review terminology annually.
+
+  toneScenarios:
+    - context: onboarding
+      userState: Relieved to be getting started, but uncertain.
+      toneShift: Warm, reassuring, plainspoken. Dry humour OK if the task is low-stakes.
+      do:
+        - Name the next concrete step.
+        - Use contractions; keep the register casual.
+      dont:
+        - Overload with feature jargon.
+        - Add exclamation points to fake enthusiasm.
+      channelBias:
+        - product_ui
+        - email
+    - context: error
+      userState: Frustrated; something didn't work.
+      toneShift: Direct, blameless, actionable. No jokes.
+      do:
+        - Say what happened in plain English.
+        - Tell the user exactly what to do next.
+      dont:
+        - Apologise excessively.
+        - Be funny when the user is frustrated.
+      channelBias:
+        - product_ui
+    - context: success
+      userState: Relieved, maybe satisfied.
+      toneShift: Warm, lightly witty, brief.
+      do:
+        - Celebrate without over-celebrating.
+        - Hand the user back to their next step.
+      dont:
+        - Over-exclaim.
+        - Ask for feedback in the celebration moment.
+      channelBias:
+        - product_ui
+        - email
+    - context: support
+      userState: Needs help; patience may be thin.
+      toneShift: Plainspoken, compassionate, precise.
+      do:
+        - Acknowledge the issue.
+        - Give clear steps to resolve or escalate.
+      dont:
+        - Use corporate support platitudes.
+        - Pass the user between "departments" without guidance.
+      channelBias:
+        - support
+        - email
+    - context: legal
+      userState: Reading terms, privacy, or legal notice.
+      toneShift: Precise, still in plain English where possible.
+      do:
+        - Keep defined terms consistent.
+        - Link to the full policy.
+      dont:
+        - Make legal copy chatty.
+        - Hide important terms in fine print.
+      channelBias:
+        - website
+        - email
+
+  messaging:
+    primaryObjectives:
+      - educate
+      - build_trust
+      - reassure
+      - convert
+    messageHierarchy:
+      - label: We're the marketing partner a small business owner would recommend to a friend.
+        priority: 1
+      - label: Plain English, not marketing jargon.
+        priority: 2
+      - label: Humour is subtle, never forced.
+        priority: 3
+      - label: Write about people with respect, always.
+        priority: 4
+    structureRules:
+      - Use the active voice; avoid passive unless emphasising the action.
+      - Use positive language rather than negative.
+      - Use the Oxford comma in lists.
+      - Use em dashes without spaces; a true em dash, not hyphens.
+      - Use exclamation points sparingly; never more than one.
+      - Go easy on semicolons.
+      - Use contractions for informal, friendly tone.
+      - Spell out a number when it begins a sentence; otherwise use the numeral.
+      - Write out big numbers in full.
+      - Generally spell out the day of the week and the month.
+      - Use numerals and 'am' or 'pm', with a space.
+      - Spell out fractions; use '%' symbol for percentages.
+      - Use sentence case for standard text; use title case for titles (capitalise every word except articles, prepositions, and conjunctions).
+      - Use all lowercase in URLs.
+    ctaStyle: Plain imperative verbs with concrete outcomes. Avoid marketing flourish and avoid "Click here".
+    evidenceAndClaimsRules:
+      - Support feature claims with links to docs or help articles.
+      - Do not overstate capability; acknowledge what requires setup or a paid tier.
+    localizationRules:
+      - Writers must consider translators — avoid idioms and culturally specific metaphors in copy that will be localised.
+      - Inclusive-language rules apply across all locales; translate the principle, not the wording.
+
+  visual:
+    logoRules:
+      - The Mailchimp wordmark and Freddie mascot have separate usage rules (capitalisation, clear space) maintained by the brand team.
+      - Freddie is not anthropomorphised in copy and does not appear as a "voice".
+    logoAssets: []
+    colorSystem:
+      - name: Cavendish Yellow
+        value: "#FFE01B"
+        usage: Primary brand colour. Buttons, highlights, and signature brand moments.
+      - name: Peppercorn
+        value: "#241C15"
+        usage: Default text on light backgrounds. Near-black with warmth.
+      - name: Coconut
+        value: "#F6F6F4"
+        usage: Warm off-white background.
+    typographySystem:
+      - role: Body
+        fontFamily: Helvetica Neue
+        usage: Default body typography on marketing and product surfaces.
+      - role: Display
+        fontFamily: Cooper Light
+        usage: Display headlines and signature editorial moments.
+    imageryOrSymbolRules:
+      - Photography and illustration choices follow the brand team's guidance (not part of the Content Style Guide).
+    accessibilityRules:
+      - Maintain WCAG AA contrast for text on the Cavendish Yellow brand colour (yellow on white fails; pair with Peppercorn).
+      - Inclusive-language rules apply to alt text and captions.
+    coBrandingRules: []
+
+  governance:
+    appliesTo:
+      - website
+      - product_ui
+      - docs
+      - email
+      - support
+      - social
+      - press
+    sourceOfTruth:
+      - https://styleguide.mailchimp.com/
+    precedenceRules:
+      - Content Style Guide takes precedence over individual copywriter preferences.
+      - Inclusive-language rules take precedence over older or inherited style.
+    owners:
+      - teamOrRole: Mailchimp Content team
+        contact: https://styleguide.mailchimp.com/
+        responsibilities:
+          - Maintaining the Content Style Guide
+          - Reviewing inclusive-language terminology
+    approvalRules:
+      - Changes to voice or terminology require Content team approval.
+    reviewCycle: The style guide is a living document; terminology (especially inclusive-language sections) is reviewed regularly.
+    exceptionsPolicy: Marketing campaigns may break from default tone (e.g. seasonal copy) but not from voice or inclusive-language rules.
+
+  illustrations:
+    doDontPairs:
+      - do: Send newsletters your customers actually want to read.
+        dont: Supercharge your customer engagement with our revolutionary email platform!
+        rationale: Concrete outcome in plain language vs. fluffy marketing superlatives.
+      - do: We couldn't send your campaign. Here's what to check.
+        dont: Oops! Something went wrong!
+        rationale: Blameless and actionable vs. excessive apology without guidance.
+      - do: server
+        dont: waitress
+        rationale: Gender-neutral job title.
+      - do: businessperson
+        dont: businessman
+        rationale: Gender-neutral form.
+      - do: blind
+        dont: visually challenged
+        rationale: Use the term the community uses; avoid euphemism.
+      - do: they
+        dont: he or she
+        rationale: Singular 'they' is preferred for gender-neutral pronouns.
+    channelExamples:
+      - channel: email
+        example: "You sent your first campaign 🎉 Here's what to try next."
+        rationale: Warm, low-exclamation, moves the user forward instead of dwelling.
+      - channel: product_ui
+        example: "We couldn't connect your store. Check your API key and try again."
+        rationale: Plain-English error with recovery path.
+    scenarioExamples:
+      - scenario: First campaign sent
+        summary: A user has just sent their first campaign; Mailchimp acknowledges the moment and points to the next value.
+        example: "Nice — your campaign's on its way. Want to see who opened it once results come in?"
+        rationale: Warm, subtle humour, calls out the next useful action.
+      - scenario: Billing dispute
+        summary: A user disputes a charge.
+        example: "Let's make sure you're being billed for what you're using. Here's your current plan and what's included."
+        rationale: Compassionate partner posture — collaborative, plain, resolves rather than defends.
+
+  localeOverrides: []
+
+evidence:
+  - id: D1
+    kind: web_page
+    title: Mailchimp Content Style Guide — Voice and Tone
+    url: https://styleguide.mailchimp.com/voice-and-tone/
+    officiality: official
+    access: public_html
+    publisher: Mailchimp (Intuit)
+    language: en-US
+    summary: Core voice philosophy — plainspoken, genuine, translator, dry. Voice stays constant; tone adapts to the reader's emotional state.
+    capturedAt: "2026-04-22"
+    tags:
+      - voice
+  - id: D2
+    kind: web_page
+    title: Mailchimp Content Style Guide — Grammar and Mechanics
+    url: https://styleguide.mailchimp.com/grammar-and-mechanics/
+    officiality: official
+    access: public_html
+    publisher: Mailchimp (Intuit)
+    language: en-US
+    summary: Detailed editorial rules — active voice, Oxford comma, em dashes, exclamation and semicolon policies, date and number formatting, contractions, URL case, terminology ('email', 'website', 'internet' all lowercase).
+    capturedAt: "2026-04-22"
+    tags:
+      - grammar
+      - mechanics
+  - id: D3
+    kind: web_page
+    title: Mailchimp Content Style Guide — Writing About People
+    url: https://styleguide.mailchimp.com/writing-about-people/
+    officiality: official
+    access: public_html
+    publisher: Mailchimp (Intuit)
+    language: en-US
+    summary: Inclusive-language rules for gender, sexuality, disability, age, race, and heritage. Specific forbidden terms and preferred alternatives.
+    capturedAt: "2026-04-22"
+    tags:
+      - inclusive-language
+  - id: D4
+    kind: web_page
+    title: Mailchimp Content Style Guide — Writing About Mailchimp
+    url: https://styleguide.mailchimp.com/writing-about-mailchimp/
+    officiality: official
+    access: public_html
+    publisher: Mailchimp (Intuit)
+    language: en-US
+    summary: Self-reference rules — 'Mailchimp' capitalisation, 'we' not 'it', 'chimp' reserved, Freddie does not speak.
+    capturedAt: "2026-04-22"
+    tags:
+      - self-reference
+
+annotations:
+  /profile/core:
+    status: confirmed
+    confidence:
+      score: 0.9
+      label: high
+      rationale: Every trait is directly sourced from the Voice and Tone page.
+    basis: synthesized
+    sources:
+      - evidenceId: D1
+  /profile/audience:
+    status: inferred
+    confidence:
+      score: 0.5
+      label: medium
+      rationale: The style guide does not publish audience segments; reconstructed from known Mailchimp product positioning and marketing.
+    basis: derived
+    sources:
+      - evidenceId: D1
+    notes: Audience record needs review by a Mailchimp content strategist.
+  /profile/relationship:
+    status: confirmed
+    confidence:
+      score: 0.9
+      label: high
+    basis: quoted
+    sources:
+      - evidenceId: D1
+      - evidenceId: D4
+  /profile/voice:
+    status: confirmed
+    confidence:
+      score: 0.95
+      label: high
+      rationale: Guardrails quoted directly from the style guide.
+    basis: quoted
+    sources:
+      - evidenceId: D1
+      - evidenceId: D3
+  /profile/lexicon:
+    status: confirmed
+    confidence:
+      score: 1.0
+      label: high
+      rationale: Every lexicon entry here is published verbatim in the Content Style Guide.
+    basis: quoted
+    sources:
+      - evidenceId: D2
+      - evidenceId: D4
+  /profile/toneScenarios:
+    status: inferred
+    confidence:
+      score: 0.55
+      label: medium
+      rationale: The style guide describes tone as adaptive but does not publish a scenario matrix. Scenarios are reconstructed from the style guide's own examples.
+    basis: derived
+    sources:
+      - evidenceId: D1
+    notes: Needs review.
+  /profile/messaging:
+    status: confirmed
+    confidence:
+      score: 0.9
+      label: high
+    basis: quoted
+    sources:
+      - evidenceId: D2
+  /profile/visual:
+    status: needs_review
+    confidence:
+      score: 0.45
+      label: medium
+      rationale: Visual identity lives outside styleguide.mailchimp.com. Palette (Cavendish Yellow, Peppercorn, Coconut) is reconstructed from Mailchimp's public brand site and widely cited values. Typography (Cooper Light display, Helvetica Neue body) is best-known-practice reconstruction, not sourced from an open brand specification.
+    basis: paraphrased
+    sources: []
+    notes: If authoritative Mailchimp visual guidelines become available, replace this section.
+  /profile/governance:
+    status: inferred
+    confidence:
+      score: 0.55
+      label: medium
+      rationale: Ownership structure inferred from the style guide's 'Content team' attribution.
+    basis: derived
+    sources:
+      - evidenceId: D1
+
+audit:
+  reviewStatus: needs_review
+  overallConfidence:
+    score: 0.75
+    label: high
+    rationale: Voice, lexicon, and grammar content is directly quoted. Audience and visual sections are informed reconstructions.
+  completeness: 0.7
+  openQuestions:
+    - Does Mailchimp publish audience segmentation beyond the homepage copy?
+    - Are the assumed brand colours (Cavendish Yellow / Peppercorn / Coconut) still canonical post-Intuit integration?
+    - Is there a tone scenario matrix inside Mailchimp that the public style guide doesn't expose?
+  assumptions:
+    - Record built from the public Content Style Guide (CC BY-NC 4.0) and widely cited brand facts. Visual section is reconstructive.
+    - Since the style guide is CC BY-NC, derivative records such as this one must stay non-commercial if they remain a literal reproduction of the source. The structured re-expression of the guide's rules is arguably transformative, but erring on the side of non-commercial use is advisable.
+  warnings:
+    - Mailchimp wordmark and Freddie mascot are trademarks of Intuit. Any rendered output must not reproduce these assets without permission.
+  generatedAt: "2026-04-22T00:00:00Z"

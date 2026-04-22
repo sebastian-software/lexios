@@ -1,0 +1,651 @@
+# GitLab — Brand ID record
+#
+# Source material: GitLab Handbook (CC BY-SA 4.0) and Pajamas Design System
+# brand guidelines. Reconstructed from the publicly published mission, values,
+# brand voice, and visual identity pages. See docs/brand-id/examples/gitlab.notes.md
+# for source-to-field mapping.
+
+meta:
+  schema:
+    id: brand-id
+    version: 0.4.0
+  brandName: GitLab
+  brandSlug: gitlab
+  legalEntityName: GitLab Inc.
+  canonicalDomain: gitlab.com
+  status: draft
+  createdAt: "2026-04-22T00:00:00Z"
+  updatedAt: "2026-04-22T00:00:00Z"
+  primaryLocale: en-US
+  supportedLocales:
+    - en-US
+  seedInputs:
+    - kind: web_page
+      label: GitLab Handbook — Mission
+      url: https://handbook.gitlab.com/handbook/company/mission/
+    - kind: web_page
+      label: GitLab Handbook — Values (CREDIT)
+      url: https://handbook.gitlab.com/handbook/values/
+    - kind: web_page
+      label: Pajamas Design System — Brand voice
+      url: https://design.gitlab.com/brand-messaging/brand-voice
+    - kind: web_page
+      label: Pajamas Design System — Color
+      url: https://design.gitlab.com/brand-design/color
+    - kind: web_page
+      label: Pajamas Design System — Typography
+      url: https://design.gitlab.com/brand-design/typography
+    - kind: web_page
+      label: About GitLab homepage
+      url: https://about.gitlab.com/
+  tags:
+    - devsecops
+    - open-core
+    - remote-first
+    - handbook-first
+    - cc-by-sa-4
+
+profile:
+  core:
+    brandSummary: The most comprehensive AI‑powered DevSecOps platform, built on an open‑core engine and a radically transparent, all‑remote operating model.
+    missionOrPromise: Enable everyone to contribute to and co‑create the software that powers our world.
+    brandSelfImage: We are a category creator — confident, sophisticated technical experts and collaborative peers at the same time. Handbook‑first, remote‑first, iteration‑first.
+    categoryContext: DevSecOps platforms. GitLab positions itself against fragmented point‑tool stacks (separate SCM, CI, SAST, registry, deploy) and monolithic enterprise DevOps suites. Category creator.
+    traitSpectrum:
+      - positivePole: innovative
+        negativePole: traditional
+        weight: 0.9
+        note: "Visionary: inspirational, but not sensationalistic."
+      - positivePole: sophisticated
+        negativePole: simple
+        weight: 0.7
+        note: "Visionary: sophisticated, but not arrogant."
+      - positivePole: expert
+        negativePole: peer
+        weight: 0.6
+        note: "Visionary: technical experts, but not inaccessible."
+      - positivePole: authoritative
+        negativePole: collaborative
+        weight: -0.7
+        note: "Empathetic: collaborative, but not deferential."
+      - positivePole: inclusive
+        negativePole: selective
+        weight: 0.95
+        note: "Empathetic: inclusive, but not patronizing."
+      - positivePole: warm
+        negativePole: cool
+        weight: 0.4
+        note: "Empathetic: approachable and thoughtful, but not overeager or insensitive."
+      - positivePole: transparent
+        negativePole: opaque
+        weight: 1.0
+        note: "Intentional: transparent, but not reckless. The handbook is public; private communication is the exception."
+      - positivePole: precise
+        negativePole: fluid
+        weight: 0.7
+        note: "Intentional: focused and reliable, but not rigid."
+      - positivePole: directive
+        negativePole: suggestive
+        weight: 0.3
+        note: "Intentional: clear, but not pushy."
+      - positivePole: practical
+        negativePole: visionary
+        weight: 0.1
+        note: "We lead with vision but ship via iteration. Plenty of both."
+
+  audience:
+    primarySegments:
+      - name: DevSecOps platform teams at mid‑to‑large enterprises
+        description: Central platform engineering, DevSecOps, and SRE groups who own the tooling that other product teams use.
+        knowledgeLevel: expert
+        markets:
+          - global
+        needsPriority:
+          - label: Consolidate scattered DevOps point tools into one governed platform
+            type: task
+            priority: 1
+          - label: Demonstrate compliance, audit trails, and security posture end‑to‑end
+            type: task
+            priority: 2
+          - label: Reduce integration debt and on‑call noise from fragmented stacks
+            type: anxiety
+            priority: 3
+      - name: Regulated industries with strict compliance needs
+        description: Financial services, public sector, aerospace, automotive, telecom — teams that operate under regulatory scrutiny.
+        knowledgeLevel: practitioner
+        markets:
+          - global
+        needsPriority:
+          - label: Evidence security and audit readiness without blocking delivery
+            type: task
+            priority: 1
+          - label: Operate air‑gapped, sovereign, or self‑managed deployments
+            type: task
+            priority: 2
+      - name: Individual developers and small teams
+        description: Users on free or early paid tiers, often arriving via the open‑source project.
+        knowledgeLevel: mixed
+        markets:
+          - global
+        needsPriority:
+          - label: Ship code with CI/CD, SCM, and basic security without assembling a stack
+            type: task
+            priority: 1
+          - label: Grow with the platform as the team scales
+            type: intent
+            priority: 2
+    secondarySegments:
+      - name: Open‑source contributors and community
+        description: External contributors to GitLab the product and to content on about.gitlab.com.
+        knowledgeLevel: expert
+        markets:
+          - global
+        needsPriority:
+          - label: Propose changes confidently without requiring permission
+            type: task
+            priority: 1
+          - label: See contribution process and decisions in the open
+            type: intent
+            priority: 2
+    literacyOrDomainAssumptions: Most readers are technical. Assume familiarity with Git, CI/CD, and security scanning concepts. Do not assume familiarity with GitLab's category‑creator framing — earn that through examples.
+    globalAudienceNotes: Single English source today. Community contributions and docs span locales informally; supportedLocales stays narrow until a localization program is formalized.
+
+  relationship:
+    addressForm:
+      linguisticForm: Second person "you" for users; first-person plural "we" for GitLab as an organisation.
+      normalizedForm: formal_second_person
+      notes: "GitLab speaks as 'we' — intentionally plural, because everyone (team members, customers, community) can contribute."
+    register:
+      defaultLevel: neutral
+      adaptationPolicy: "Direct, transparent, honest. 'Business casual'‑ish but informed by the handbook's plain‑language convention. No marketing fluff."
+    role: expert_partner
+    stance: We stand beside teams building software — as technical peers who happen to have built the platform. Transparent about what we know and what we don't.
+    authorityLevel: expert_led
+    customerView: A technical professional operating under real constraints (compliance, headcount, legacy, velocity). Values directness and time saved over polish.
+    pronounPolicy: Use 'we' for GitLab. Use singular 'they' for gender‑neutral references. Don't pull rank — if you have to remind someone of your position in the company, something has already gone wrong (handbook, Collaboration § Don't pull rank).
+    humorDistance: subtle
+
+  voice:
+    jargonPolicy:
+      default: embrace
+      firstUseDefinitions: {}
+      notes: "Technical terms are the working language. But plain‑language translation is mandatory for non‑specialist audiences (Pajamas: 'Meet readers where they are — don't assume they know the technology or topics you're covering')."
+    plainLanguage:
+      readingLevel: 11
+      notes: "Professional reading level for the technical audience. For generalist pages (pricing, ESG, public blog), drop toward reading level 9."
+    claimsPolicy: Back recommendations with data where possible. Be accurate and provable. Share limitations honestly — transparency over reassurance.
+    personalityGuardrails:
+      - Assume positive intent in every interaction (handbook, Collaboration).
+      - Blameless problem solving — address behaviour and process, not people.
+      - Say sorry when you make a mistake; do it publicly if the mistake was public.
+      - Give negative feedback 1‑to‑1, not in a large setting.
+      - Don't pull rank; don't invoke titles to win arguments.
+      - Iteration over perfection — ship small changes frequently rather than waiting for the complete answer.
+      - Share more than feels comfortable. Private is the exception; public is the default.
+      - Kindness and candor are not opposites. Separate critique of the work from respect for the person.
+
+  lexicon:
+    entries:
+      - term: GitLab
+        definition: The company, the open‑core product, and the platform.
+        kind: brand
+        canonicalSpelling: GitLab
+        forbiddenVariants:
+          - Gitlab
+          - gitlab
+          - Git Lab
+        casingRule: Capital G and L; joined.
+        translationPolicy: do_not_translate
+      - term: CREDIT
+        definition: Acronym for GitLab's six core values — Collaboration, Results for Customers, Efficiency, Diversity Inclusion and Belonging, Iteration, Transparency.
+        kind: method
+        canonicalSpelling: CREDIT
+        casingRule: All caps; it's an acronym.
+        translationPolicy: do_not_translate
+      - term: handbook
+        definition: GitLab's public operating manual. The authoritative source of truth for how the company works.
+        kind: domain_term
+        contextualMeaning: At GitLab, "handbook" means the public handbook at handbook.gitlab.com — not an internal document, not a manager's own notes. "Handbook‑first" is a working mode.
+        usage: Lowercase in body copy. "Handbook‑first" is a known compound.
+      - term: all‑remote
+        definition: GitLab's operating model — no offices, asynchronous by default.
+        kind: method
+        canonicalSpelling: all‑remote
+        casingRule: Lowercase, hyphenated.
+      - term: iteration
+        definition: Making small changes frequently rather than shipping complete solutions.
+        contextualMeaning: At GitLab, "iteration" is an operating value, not a generic Agile concept. Means "smallest change that adds value now" rather than "sprint plan."
+        kind: domain_term
+      - term: MVC
+        definition: Minimum Viable Change — the smallest increment that adds value.
+        kind: method
+        canonicalSpelling: MVC
+        aliases:
+          - minimum viable change
+        casingRule: Uppercase acronym.
+      - term: DevSecOps
+        definition: The unified practice of development, security, and operations.
+        kind: industry
+        canonicalSpelling: DevSecOps
+        forbiddenVariants:
+          - Dev Sec Ops
+          - devsecops
+          - DevSecOps.
+        casingRule: Camel‑cased with capital D, S, O.
+      - term: DevSecOps platform
+        definition: GitLab's product category — a single application spanning plan, code, build, test, secure, release, operate, monitor.
+        contextualMeaning: When GitLab says "platform," we mean a single application (not an orchestrator over other tools). Distinction matters in positioning against fragmented stacks.
+        kind: product
+    generalRules:
+      - Capitalise proper product, feature, and value names.
+      - Spell out acronyms on first mention for non‑specialist audiences.
+
+  toneScenarios:
+    - context: onboarding
+      userState: New team member or evaluator getting started with the handbook or the product.
+      toneShift: Welcoming, patient, iteration‑friendly.
+      do:
+        - Link to the handbook for the canonical answer.
+        - Offer the MVC path through onboarding tasks.
+      dont:
+        - Require a full mental model before any first contribution.
+        - Assume familiarity with GitLab conventions (values, handbook, DRI).
+      channelBias:
+        - website
+        - docs
+        - product_ui
+    - context: sales
+      userState: Enterprise buyer evaluating DevSecOps consolidation.
+      toneShift: Direct, data‑backed, honest about what the platform does and doesn't do today.
+      do:
+        - Lead with the concrete problem the platform solves.
+        - Reference reality (case studies, metrics) not aspiration.
+      dont:
+        - Over‑promise AI capability beyond current releases.
+        - Hide limitations or pricing structure.
+      channelBias:
+        - website
+        - sales
+    - context: support
+      userState: Team member or customer hitting a problem.
+      toneShift: Blameless, candid, actionable.
+      do:
+        - Investigate the situation, not the person.
+        - Reproduce before speculating.
+      dont:
+        - Apologise excessively.
+        - Escalate defensiveness.
+      channelBias:
+        - support
+        - product_ui
+    - context: legal
+      userState: Reading license, compliance, or trade‑restriction content.
+      toneShift: Precise and neutral.
+      do:
+        - Use defined terms consistently.
+        - Link to the authoritative policy.
+      dont:
+        - Smuggle marketing framing into legal text.
+      channelBias:
+        - website
+        - docs
+    - context: crisis
+      userState: Incident or public issue affecting customers or the community.
+      toneShift: Transparent, fast, specific.
+      do:
+        - Publish the facts known now with a timestamp.
+        - Update at intervals until resolved.
+      dont:
+        - Speculate beyond confirmed facts.
+        - Go quiet.
+      channelBias:
+        - social
+        - press
+        - website
+
+  messaging:
+    primaryObjectives:
+      - educate
+      - differentiate
+      - build_trust
+      - activate
+      - convert
+    messageHierarchy:
+      - label: The most comprehensive AI‑powered DevSecOps platform.
+        priority: 1
+      - label: Your end‑to‑end DevOps process in one place.
+        priority: 2
+      - label: Build secure products with fewer security products.
+        priority: 3
+      - label: Teams orchestrate from above the software lifecycle while AI agents execute within it.
+        priority: 4
+    structureRules:
+      - Use plain language even in technical content for non‑specialist audiences.
+      - Default to sentence case; refrain from using all caps.
+      - Left‑align all copy; never force‑justify, center‑align, or right‑align.
+      - Keep text solid‑filled; do not use gradients on text.
+      - Use the active voice.
+    ctaStyle: Direct verbs with clear outcomes — "Talk to sales", "Get free trial", "Try for free", "Start building faster today". No marketing flourish.
+    evidenceAndClaimsRules:
+      - Cite the handbook as the canonical source for how GitLab works.
+      - Back platform claims with docs, release posts, or customer references.
+      - Share limitations where relevant; do not imply capabilities that aren't shipped.
+    localizationRules: null
+
+  visual:
+    logoRules:
+      - The GitLab tanuki and wordmark are the approved brand marks.
+      - Maintain clear space; do not alter proportions, colour, or orientation.
+      - Logo appears in orange, purple, white, or charcoal depending on context.
+    logoAssets: []
+    colorSystem:
+      - name: White
+        value: "#FFFFFF"
+        usage: Primary light background. Headlines and body copy on dark surfaces.
+      - name: Charcoal
+        value: "#171321"
+        usage: Primary dark background. Headlines and body copy on light surfaces.
+      - name: Orange 01p
+        value: "#FCA326"
+        usage: Light tanuki orange. Primary brand accent; tanuki logo light gradient.
+      - name: Orange 02p
+        value: "#FC6D26"
+        usage: Mid tanuki orange. Brand colour; default gradient component.
+      - name: Orange 03p
+        value: "#E24329"
+        usage: Deep tanuki orange/red. Brand colour; tanuki logo dark gradient.
+      - name: Purple 01p
+        value: "#A989F5"
+        usage: Light brand purple. Hyperlinks on dark backgrounds; AI gradient endpoint.
+      - name: Purple 02p
+        value: "#7759C2"
+        usage: Mid brand purple. Signature brand purple; hyperlinks on light backgrounds.
+      - name: Purple 04s
+        value: "#232150"
+        usage: Dark purple. Default fill for dark‑mode gradient backgrounds.
+      - name: Teal 02s
+        value: "#6FDAC9"
+        usage: Positive connotation for product features. Accent for charts and UI feedback.
+      - name: Gray 03
+        value: "#74717A"
+        usage: Neutral for hierarchy and secondary information.
+      - name: Pink 01g
+        value: "#FFB9C9"
+        usage: Gradient‑only. Component of the default brand background gradient.
+    typographySystem:
+      - role: Headline
+        fontFamily: GitLab Sans
+        usage: GitLab Sans Bold, 105% leading, −45 tracking. All display and H1–H3.
+      - role: Subheader
+        fontFamily: GitLab Sans
+        usage: GitLab Sans Regular, 110% leading, −20 tracking, optical kerning. Intros and outros.
+      - role: Body
+        fontFamily: GitLab Sans
+        usage: GitLab Sans Regular, 135% leading, 0 tracking. Paragraphs. Fallback to Inter where GitLab Sans is unavailable (e.g. Google apps).
+      - role: CTA
+        fontFamily: GitLab Sans
+        usage: GitLab Sans SemiBold. Buttons and calls to action.
+      - role: Code / mono
+        fontFamily: GitLab Mono
+        usage: GitLab Mono Regular only. Code blocks, product UI representations, select taglines, numerical statistics.
+    imageryOrSymbolRules:
+      - Illustrations follow the type‑repetition concept for moments of emphasis.
+      - Tanuki imagery stays within approved lockups.
+    accessibilityRules:
+      - Contrast ratio 4.5:1 preferred for text and UI; 3:1 acceptable for larger text per WCAG 2.1 Level AA.
+      - Keep text solid‑filled.
+      - Avoid all caps outside of acronyms like CREDIT, DRI, MVC.
+    coBrandingRules:
+      - Partner and customer logos must not overlap the tanuki clear space.
+      - Co‑branded materials follow partner programme guidelines alongside GitLab brand rules.
+
+  governance:
+    appliesTo:
+      - website
+      - product_ui
+      - docs
+      - email
+      - social
+      - sales
+      - press
+      - events
+      - partner
+    sourceOfTruth:
+      - https://handbook.gitlab.com/
+      - https://design.gitlab.com/
+    precedenceRules:
+      - Handbook supersedes individual interpretation. When in doubt, the handbook wins.
+      - If the handbook is wrong, update the handbook (merge request).
+      - Brand guidelines in Pajamas supersede departmental improvisation on visual identity.
+    owners:
+      - teamOrRole: Brand Creative team
+        contact: https://design.gitlab.com/
+        responsibilities:
+          - Maintaining brand voice, visual identity, and Pajamas Design System
+      - teamOrRole: Chief People Officer
+        contact: https://handbook.gitlab.com/handbook/values/
+        responsibilities:
+          - Stewardship of the CREDIT values and handbook values page
+    approvalRules:
+      - Brand guideline changes merge via public MR against the Pajamas repo.
+      - Handbook changes merge via public MR to www-gitlab-com handbook.
+    reviewCycle: Continuous; living documents updated through merge requests. Values page was last substantially revised with the CREDIT consolidation.
+    exceptionsPolicy: Campaign‑specific custom gradients and illustrations are allowed within stated parameters (max 3 colours, Purple or Orange always included, etc.). Anything else goes through Brand Creative.
+
+  illustrations:
+    doDontPairs:
+      - do: Start building faster today
+        dont: Unlock unparalleled velocity for your enterprise
+        rationale: Direct CTA, names the outcome; marketing superlatives violate the Visionary/not‑sensationalistic guardrail.
+      - do: We created the category.
+        dont: We are the world's #1 leading DevSecOps solution.
+        rationale: Specific and provable; superlatives without evidence violate claimsPolicy.
+      - do: Here are the limitations of GitLab Duo in its current release.
+        dont: GitLab Duo can do anything you need, at any scale.
+        rationale: Transparency over reassurance. Share limitations honestly.
+      - do: You can assign this merge request to me for review.
+        dont: Someone should review this when they have time.
+        rationale: DRI (directly responsible individual). Name the person and the action.
+    channelExamples:
+      - channel: website
+        example: "Finally, AI for the entire software lifecycle."
+        rationale: Headline states the category positioning plainly. No jargon, no superlative.
+      - channel: social
+        example: "The handbook is public. So are the decisions behind it. Read about how GitLab actually works: handbook.gitlab.com"
+        rationale: Transparency as the message; links to the authoritative source.
+    scenarioExamples:
+      - scenario: Feature announcement post
+        summary: A blog post announcing a new GitLab capability.
+        example: "What's new in GitLab 17.x: [capability]. Here's what it does, what it doesn't do yet, and how to try it."
+        rationale: Leads with the change, states limits honestly, ends with the path to value.
+      - scenario: Incident update
+        summary: A public post about an ongoing incident.
+        example: "We're investigating elevated latency affecting CI pipelines. Timeline so far: […]. Next update in 15 minutes."
+        rationale: Specific, timestamped, promises follow‑up. Transparency even in failure.
+
+  localeOverrides: []
+
+evidence:
+  - id: D1
+    kind: web_page
+    title: GitLab Handbook — Mission
+    url: https://handbook.gitlab.com/handbook/company/mission/
+    officiality: official
+    access: public_html
+    publisher: GitLab Inc.
+    language: en-US
+    summary: Mission ("enable everyone to contribute…"), purpose (lifetime earnings), relationship to vision and values. 30‑year cadence for mission and purpose.
+    capturedAt: "2026-04-22"
+    tags:
+      - mission
+      - handbook
+  - id: D2
+    kind: web_page
+    title: GitLab Handbook — Values (CREDIT)
+    url: https://handbook.gitlab.com/handbook/values/
+    officiality: official
+    access: public_html
+    publisher: GitLab Inc.
+    language: en-US
+    summary: Six core values (Collaboration, Results, Efficiency, DIB, Iteration, Transparency); extensive operating principles — kindness, assume positive intent, blameless problem solving, short toes, give negative feedback 1‑1, etc.
+    capturedAt: "2026-04-22"
+    tags:
+      - values
+      - handbook
+  - id: D3
+    kind: web_page
+    title: Pajamas Design System — Brand voice
+    url: https://design.gitlab.com/brand-messaging/brand-voice
+    officiality: official
+    access: public_html
+    publisher: GitLab Inc. / Brand Creative
+    language: en-US
+    summary: Three voice pillars (Visionary, Empathetic, Intentional) with explicit "We are X, but we are not Y" pairs per pillar.
+    capturedAt: "2026-04-22"
+    tags:
+      - voice
+      - brand-guidelines
+  - id: D4
+    kind: web_page
+    title: Pajamas Design System — Color
+    url: https://design.gitlab.com/brand-design/color
+    officiality: official
+    access: public_html
+    publisher: GitLab Inc. / Brand Creative
+    language: en-US
+    summary: Primary palette (White, Charcoal, three Oranges, two Purples), secondary palette (additional purples, teals, grays), gradient palette (pinks, vermillion), WCAG 2.1 AA guidance.
+    capturedAt: "2026-04-22"
+    tags:
+      - visual
+      - colour
+  - id: D5
+    kind: web_page
+    title: Pajamas Design System — Typography
+    url: https://design.gitlab.com/brand-design/typography
+    officiality: official
+    access: public_html
+    publisher: GitLab Inc. / Brand Creative
+    language: en-US
+    summary: GitLab Sans primary (Bold/Regular/SemiBold), GitLab Mono secondary, Inter fallback. Per‑role leading, tracking, and kerning.
+    capturedAt: "2026-04-22"
+    tags:
+      - visual
+      - typography
+  - id: D6
+    kind: web_page
+    title: About GitLab homepage
+    url: https://about.gitlab.com/
+    officiality: official
+    access: public_html
+    publisher: GitLab Inc.
+    language: en-US
+    summary: Current positioning statements — "Finally, AI for the entire software lifecycle", "Your intelligent orchestration platform for DevSecOps", CTAs, audience signalling.
+    capturedAt: "2026-04-22"
+    tags:
+      - messaging
+      - homepage
+
+annotations:
+  /profile/core:
+    status: confirmed
+    confidence:
+      score: 0.9
+      label: high
+      rationale: Mission quoted directly from the handbook; trait pillars sourced from Pajamas brand‑voice page. Trait‑spectrum weights are interpretations but mapped to GitLab's own "We are X, but we are not Y" framework.
+    basis: synthesized
+    sources:
+      - evidenceId: D1
+      - evidenceId: D3
+  /profile/audience:
+    status: inferred
+    confidence:
+      score: 0.55
+      label: medium
+      rationale: Audience segments reconstructed from homepage copy and category positioning, not from a published audience document.
+    basis: derived
+    sources:
+      - evidenceId: D6
+    notes: Segment prioritisation and needsPriority values need validation from GitLab's own audience research.
+  /profile/relationship:
+    status: confirmed
+    confidence:
+      score: 0.85
+      label: high
+      rationale: Direct from handbook values (Collaboration, Transparency, Don't pull rank sections).
+    basis: paraphrased
+    sources:
+      - evidenceId: D2
+  /profile/voice:
+    status: confirmed
+    confidence:
+      score: 0.85
+      label: high
+      rationale: Guardrails distilled from handbook values page. JargonPolicy adapts Pajamas guidance. ReadingLevel is an interpretation (the brand voice page does not specify a numeric target).
+    basis: synthesized
+    sources:
+      - evidenceId: D2
+      - evidenceId: D3
+  /profile/lexicon:
+    status: mixed
+    confidence:
+      score: 0.65
+      label: medium
+      rationale: Canonical spellings (GitLab, CREDIT, DevSecOps) confirmed. Contextual meanings for "handbook", "iteration", "platform" are editorial interpretation of how the terms function in GitLab context.
+    basis: synthesized
+    sources:
+      - evidenceId: D2
+      - evidenceId: D3
+  /profile/toneScenarios:
+    status: inferred
+    confidence:
+      score: 0.5
+      label: medium
+      rationale: Pajamas does not publish a formal tone matrix; scenarios are reconstructed from observable patterns in GitLab blogs, support posts, and incident communications.
+    basis: derived
+    sources:
+      - evidenceId: D2
+      - evidenceId: D3
+  /profile/visual/colorSystem:
+    status: confirmed
+    confidence:
+      score: 1.0
+      label: high
+    basis: quoted
+    sources:
+      - evidenceId: D4
+  /profile/visual/typographySystem:
+    status: confirmed
+    confidence:
+      score: 0.95
+      label: high
+      rationale: Families and usage per Pajamas. v0.4 schema simplifies fontFamily to a single string per role — original Pajamas specifies weights and leading which are captured in the usage text.
+    basis: paraphrased
+    sources:
+      - evidenceId: D5
+  /profile/governance:
+    status: confirmed
+    confidence:
+      score: 0.9
+      label: high
+    basis: synthesized
+    sources:
+      - evidenceId: D1
+      - evidenceId: D2
+
+audit:
+  reviewStatus: needs_review
+  overallConfidence:
+    score: 0.8
+    label: high
+    rationale: Editorial and visual content directly sourced from CC BY-SA handbook and Pajamas. Audience and tone scenarios are informed reconstructions.
+  completeness: 0.75
+  openQuestions:
+    - Does GitLab publish a formal audience segmentation document beyond the homepage copy?
+    - Is there an internal tone matrix by context/channel, or is the three‑pillar voice framework considered sufficient?
+    - What is the canonical list of approved logo assets and the source of truth for asset files?
+  assumptions:
+    - Record built from the public handbook (CC BY-SA 4.0) and Pajamas Design System. Internal brand materials may add nuance.
+    - Trait‑spectrum weights map GitLab's "We are X, but we are not Y" language to the canonical v0.4 axis vocabulary; some axes are close matches but not identical.
+  warnings:
+    - GitLab wordmark and tanuki are trademarks of GitLab Inc. Rule descriptions are public; actual logo files must be sourced from the approved asset repository.
+  generatedAt: "2026-04-22T00:00:00Z"

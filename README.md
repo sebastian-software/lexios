@@ -196,14 +196,20 @@ export function App() {
 }
 ```
 
-The local demo renders `examples/example.brand-id.yaml` as a neutral editorial report:
+The local demo renders three reference brands as neutral editorial reports — switchable via a top tab bar (`?brand=govuk`, `?brand=mailchimp`, `?brand=gitlab`):
 
 ```bash
 npm run demo:brand-report:build
 npm exec vite -- --host 127.0.0.1 examples/react-brand-report
 ```
 
-A second demo at `examples/react-brand-report-explorations/` shows multiple visual alternatives per field — a reference sheet used while designing the canonical renderer.
+The three reference records live in [`examples/`](examples/) with per-brand source-to-field notes in [`docs/brand-id/examples/`](docs/brand-id/examples/):
+
+- [`govuk.brand-id.yaml`](examples/govuk.brand-id.yaml) — UK government, Open Government Licence v3.0. Rules-heavy voice, 9-year-old reading age, full Design System palette.
+- [`mailchimp.brand-id.yaml`](examples/mailchimp.brand-id.yaml) — consumer SaaS, CC BY-NC 4.0. Warm and plainspoken, canonical Content Style Guide.
+- [`gitlab.brand-id.yaml`](examples/gitlab.brand-id.yaml) — DevSecOps platform, CC BY-SA 4.0. Three-pillar voice framework, CREDIT values, Pajamas Design System.
+
+A second demo at `examples/react-brand-report-explorations/` shows multiple visual alternatives per field — a reference sheet used while designing the canonical renderer. Same brand switcher.
 
 ## Current Status
 

@@ -1,14 +1,89 @@
 import { StrictMode, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 
-import brandYaml from "../../example.brand-id.yaml?raw";
+import govukYaml from "../../govuk.brand-id.yaml?raw";
+import mailchimpYaml from "../../mailchimp.brand-id.yaml?raw";
+import gitlabYaml from "../../gitlab.brand-id.yaml?raw";
 import { parseBrandIdYaml } from "../../../src/brand-id.yaml.js";
 import { deriveMissingFieldPaths } from "../../../src/brand-id.audit.js";
 
 import "./styles.css";
 
-const doc = parseBrandIdYaml(brandYaml);
+type BrandKey = "govuk" | "mailchimp" | "gitlab";
+const YAML_BY_BRAND: Record<BrandKey, string> = {
+  govuk: govukYaml,
+  mailchimp: mailchimpYaml,
+  gitlab: gitlabYaml,
+};
+const BRAND_LABELS: Record<BrandKey, string> = {
+  govuk: "GOV.UK",
+  mailchimp: "Mailchimp",
+  gitlab: "GitLab",
+};
+
+function activeBrand(): BrandKey {
+  const v = new URLSearchParams(window.location.search).get("brand");
+  return v === "govuk" || v === "mailchimp" || v === "gitlab" ? v : "govuk";
+}
+const BRAND: BrandKey = activeBrand();
+
+const doc = parseBrandIdYaml(YAML_BY_BRAND[BRAND]);
 const p = doc.profile;
+
+function setBrand(key: BrandKey) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("brand", key);
+  window.location.href = url.toString();
+}
+
+function BrandSwitcher() {
+  return (
+    <nav
+      aria-label="Brand"
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+        display: "flex",
+        alignItems: "center",
+        gap: "0.5rem",
+        padding: "0.6rem 1rem",
+        background: "var(--paper)",
+        borderBottom: "1px solid var(--rule)",
+        fontSize: "0.82rem",
+        fontFamily: "var(--f-ui)",
+        marginBottom: "1rem",
+      }}
+    >
+      <span className="mono small muted" style={{ marginRight: "0.25rem" }}>
+        Brand
+      </span>
+      {(Object.keys(BRAND_LABELS) as BrandKey[]).map((key) => {
+        const active = key === BRAND;
+        return (
+          <button
+            key={key}
+            type="button"
+            aria-pressed={active}
+            onClick={() => setBrand(key)}
+            style={{
+              font: "inherit",
+              fontSize: "0.82rem",
+              padding: "0.25rem 0.7rem",
+              border: "1px solid var(--rule)",
+              borderRadius: 999,
+              background: active ? "var(--ink)" : "var(--panel)",
+              color: active ? "var(--paper)" : "var(--ink)",
+              cursor: "pointer",
+            }}
+          >
+            {BRAND_LABELS[key]}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
 
 /* ─────────────────────────────────────── shell primitives ─────── */
 
@@ -255,16 +330,18 @@ function Gauge({ value, label }: { value: number; label?: string }) {
 
 function App() {
   return (
-    <div className="ex">
-      <header className="ex__intro">
-        <h1>Brand ID · Visual Explorations</h1>
-        <p>
-          For every major field in <code>examples/3degrees.brand-id.yaml</code>, this sheet shows
-          multiple visual translations side by side. Picking a design means picking a visual idea
-          per block. Everything below renders the same actual 3Degrees data — quick and dirty, not
-          polished.
-        </p>
-      </header>
+    <>
+      <BrandSwitcher />
+      <div className="ex">
+        <header className="ex__intro">
+          <h1>Brand ID · Visual Explorations</h1>
+          <p>
+            For every major field in <code>examples/{BRAND}.brand-id.yaml</code>, this sheet shows
+            multiple visual translations side by side. Picking a design means picking a visual idea
+            per block. Everything below renders the same actual {BRAND_LABELS[BRAND]} data — quick
+            and dirty, not polished.
+          </p>
+        </header>
 
       {/* ────────── META ────────── */}
 
@@ -1868,11 +1945,12 @@ function App() {
         </Cell>
       </Row>
 
-      <footer style={{ margin: "3rem 0 0", paddingTop: "1rem", borderTop: "1px solid var(--rule)", fontSize: "0.78rem", color: "var(--ink-faint)" }}>
-        Quick-and-dirty exploration of visual alternatives per Brand ID field. Pick visuals per row,
-        then we design a real variant around them.
-      </footer>
-    </div>
+        <footer style={{ margin: "3rem 0 0", paddingTop: "1rem", borderTop: "1px solid var(--rule)", fontSize: "0.78rem", color: "var(--ink-faint)" }}>
+          Quick-and-dirty exploration of visual alternatives per Brand ID field. Pick visuals per row,
+          then we design a real variant around them.
+        </footer>
+      </div>
+    </>
   );
 }
 

@@ -372,3 +372,53 @@ code {
     white-space: normal;
   }
 }
+
+/* Brand switcher — single bar at the top of the report demo */
+.lx-brand-switch {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem clamp(1rem, 3vw, 2rem);
+  background: var(--lx-paper);
+  border-bottom: 1px solid var(--lx-hairline);
+  font-family: var(--lx-sans);
+  font-size: 0.85rem;
+}
+
+.lx-brand-switch__label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  color: var(--lx-ink-muted);
+  margin-right: 0.5rem;
+}
+
+.lx-brand-switch__btn {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--lx-line);
+  border-radius: 999px;
+  background: var(--lx-surface);
+  color: var(--lx-ink);
+  cursor: pointer;
+}
+
+.lx-brand-switch__btn:hover {
+  background: var(--lx-celadon);
+}
+
+.lx-brand-switch__btn:focus-visible {
+  outline: 2px solid var(--lx-celadon-dark);
+  outline-offset: 2px;
+}
+
+.lx-brand-switch__btn.is-active {
+  background: var(--lx-ink);
+  color: var(--lx-paper);
+  border-color: var(--lx-ink);
+}

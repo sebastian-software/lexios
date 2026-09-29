@@ -41,11 +41,12 @@ jobs:
         run: npm run test:react-report
 
       - name: Configure Pages
+        id: pages
         uses: actions/configure-pages@v5
 
       - name: Build Pages artifact
         run: |
-          npm exec vite -- build examples/react-brand-report --base "/${{ github.event.repository.name }}/"
+          npm exec vite -- build examples/react-brand-report --base "${{ steps.pages.outputs.base_path }}/"
           cp examples/react-brand-report/dist/index.html examples/react-brand-report/dist/404.html
 
       - name: Upload Pages artifact

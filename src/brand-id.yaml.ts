@@ -6,14 +6,17 @@ export function parseBrandIdYaml(input: string): BrandIdDraft {
   return BrandIdDraftSchema.parse(parseYaml(input));
 }
 
-/** A syntax failure retains YAMLParseError's code, message, pos, and linePos. */
+/**
+ * YAMLParseError retains syntax code/message/pos/linePos; ReferenceError retains
+ * the YAML converter's unresolved-alias or alias-expansion-limit diagnostic.
+ */
 export type BrandIdYamlParseResult =
   | ReturnType<typeof BrandIdDraftSchema.safeParse>
-  | { success: false; error: YAMLParseError };
+  | { success: false; error: YAMLParseError | ReferenceError };
 
 /**
- * Parse user-authored YAML without throwing on YAML syntax or schema errors.
- * On failure, error is a YAMLParseError (syntax) or ZodError (schema).
+ * Parse user-authored YAML without throwing on YAML syntax, alias-conversion, or schema errors.
+ * On failure, error is YAMLParseError (syntax), ReferenceError (aliases), or ZodError (schema).
  * Use parseBrandIdYaml for the throwing alternative.
  */
 export function safeParseBrandIdYaml(input: string): BrandIdYamlParseResult {
@@ -21,7 +24,7 @@ export function safeParseBrandIdYaml(input: string): BrandIdYamlParseResult {
   try {
     value = parseYaml(input);
   } catch (error) {
-    if (error instanceof YAMLParseError) {
+    if (error instanceof YAMLParseError || error instanceof ReferenceError) {
       return { success: false, error };
     }
     throw error;

@@ -35,3 +35,22 @@ for (const slug of ["govuk", "mailchimp", "gitlab"]) {
     assert.deepEqual(safeParseBrandIdYaml(stringifyBrandIdYaml(result.data)), result);
   });
 }
+
+
+test("YAML alias conversion failures return the original ReferenceError diagnostic", () => {
+  const excessiveAliases = "anchor: &anchor [value]\nmeta: [" + Array(101).fill("*anchor").join(", ") + "]";
+  for (const [input, diagnostic] of [
+    ["meta: *missing", /Unresolved alias.*missing/],
+    [excessiveAliases, /Excessive alias count/],
+  ]) {
+    const result = safeParseBrandIdYaml(input);
+    assert.equal(result.success, false);
+    assert.ok(result.error instanceof ReferenceError);
+    assert.match(result.error.message, diagnostic);
+    assert.throws(() => parseBrandIdYaml(input), (error) => {
+      assert.ok(error instanceof ReferenceError);
+      assert.equal(error.message, result.error.message);
+      return true;
+    });
+  }
+});
